@@ -30,4 +30,13 @@
 ## Team Reminders 
 
 - Please use the following structure for your feature branches: issue-[issue #]-[feautureName]
+- Be up-to-date with required tasks
+
+
+
+--- 
+
+
+## Current Team Issues :(
+- Nothing within the app.py file 
 
