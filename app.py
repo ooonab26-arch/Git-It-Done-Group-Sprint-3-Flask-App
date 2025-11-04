@@ -73,7 +73,7 @@ def register_cli(app: Flask):
         for title, st in samples:
             db.session.add(Events(title=title, start_time=st))
         db.session.commit()
-        print("Seeded demo events ✅")
+        print("Seeded demo events")
 
 app = create_app()
 

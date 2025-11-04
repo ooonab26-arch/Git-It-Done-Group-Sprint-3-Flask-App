@@ -35,8 +35,3 @@
 
 
 --- 
-
-
-## Current Team Issues :(
-- Nothing within the app.py file 
-
