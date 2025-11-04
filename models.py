@@ -4,13 +4,15 @@ from flask_login import UserMixin
 db = SQLAlchemy()
 
 class User(db.Model, UserMixin):
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    email = db.Column(db.String(200), unique = True, nullable=False)
+    email = db.Column(db.String(200), unique=True, nullable=False)
     position = db.Column(db.String(200), nullable=False)
-    # events = db.relationship('Events', backref='user', lazy=True) Consider adding this in if I want to track which user (collyn or SW) edited an event
+    # events = db.relationship('Events', backref='user', lazy=True)
 
 class Events(db.Model):
+    __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     start_time = db.Column(db.Time, nullable=False)
@@ -20,36 +22,44 @@ class Events(db.Model):
     location = db.Column(db.String(80), nullable=False)
     description = db.Column(db.Text, nullable=True)
 
-    # Foreign Keys
+    # Foreign Keys (table names now match __tablename__ below)
     advert_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'), nullable=False)
     partner_id = db.Column(db.Integer, db.ForeignKey('partners.id'))
     lead_organizer = db.Column(db.Integer, db.ForeignKey('organizers.id'), nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'), nullable=False)
 
 class Advertisement(db.Model):
-    id = db.Column(db.Integer, primary_key=True) 
+    __tablename__ = "advertisement"
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    events = db.relationship('Events', backref='event_type', lazy=True)
+    # backref name must NOT clash with Event_Type's backref
+    events = db.relationship('Events', backref='advertisement', lazy=True)
 
 class Partners(db.Model):
+    __tablename__ = "partners"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
 
 class Organizer(db.Model):
+    __tablename__ = "organizers"  # plural to match FK 'organizers.id'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
 
 class Event_Type(db.Model):
+    __tablename__ = "event_type"  # avoids 'event__type' auto-name
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     events = db.relationship('Events', backref='event_type', lazy=True)
 
-# Association tables for 'many to many' relationships in DB
-event_organizers = db.Table('event_organizers',
+# Association tables (FKs now match table names above)
+event_organizers = db.Table(
+    'event_organizers',
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
-    db.Column('organizer_id', db.Integer, db.ForeignKey('organizers.id'), primary_key=True)
+    db.Column('organizer_id', db.Integer, db.ForeignKey('organizers.id'), primary_key=True),
 )
 
-event_partners = db.Table('event_partners', 
+event_partners = db.Table(
+    'event_partners',
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
-    db.Column('partner_id', db.Integer, db.ForeignKey('partners.id'), primary_key=True))
+    db.Column('partner_id', db.Integer, db.ForeignKey('partners.id'), primary_key=True),
+)

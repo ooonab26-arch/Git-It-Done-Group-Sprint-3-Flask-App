@@ -6,10 +6,13 @@ from models import db, Events
 
 def create_app():
     app = Flask(__name__, template_folder="templates", static_folder="static")
-    os.makedirs("instance", exist_ok=True)
+    os.makedirs(app.instance_path, exist_ok=True) 
+    db_file = os.path.join(app.instance_path, "dev.sqlite")
+    sqlite_uri = "sqlite:///" + db_file  
+
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev"),
-        SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", "sqlite:///instance/dev.sqlite"),
+        SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", sqlite_uri),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         JSON_SORT_KEYS=False,
     )
