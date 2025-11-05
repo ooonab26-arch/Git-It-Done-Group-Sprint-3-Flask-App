@@ -68,13 +68,12 @@ body{
 .main-dashboard{
     display: flex;
     align-items: flex-start;
-    /* background-color: aquamarine; */
-
 }
 
 .middle-section{
     flex: 0 0 70%;
-    margin-left: 20px;
+    margin-left: 10px;
+    /* background-color: #d22b8f; */
 }
 
 .total-container{
@@ -103,18 +102,14 @@ body{
 }
 
 .right-section{
-    flex: 0 0 30%;
-    align-items: center;
-    
-    /* background-color: red; */
-    /* padding: 30px; */
-
+    flex: 0 0 10%;
+    align-items: flex-start;
 }
 
 .attendance-container{
     padding: 110px;
     background-color: rgb(195, 215, 249);
-    margin-left: 20px;
+    /* margin-left: 10px; */
     border-radius: 20px;
     margin-bottom: 20px;
     position: relative;
@@ -137,7 +132,7 @@ body{
     position: relative;
     padding: 160px;
     background-color: rgb(195, 215, 249);
-    margin-left: 20px;
+    /* margin-left: 20px; */
     border-radius: 20px;
     margin-top: 10px;
 }
@@ -159,51 +154,72 @@ body{
     position: relative;
     padding: 160px 160px;
     background-color: rgb(195, 215, 249);
-    margin-left: 75px;
+    margin-left: 45px;
     margin-top: 30px;
     border-radius: 20px;
     margin-bottom: 20px;
     align-self: center;
 }
 
-.per-breakdown-container div{
-    position: absolute;
-    top: 0;
-    left: 0;
-    flex-direction: column;
-    background-color: rgb(195, 215, 249);
-    border-radius: 12px;
-    margin: 20px;
-    font-weight: bold;
-    font-size: 17px ;
-    color: rgb(65, 0, 157);
+.per-break-title{
+        position: absolute;
+        top: 0; left: 0;
+        margin: 20px;
+        background-color: rgb(195, 215, 249);
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 17px;
+        color: rgb(65, 0, 157);
 }
  
+.progress-bar{
+    width: 100px;
+    height: 100px;
+    /* background-color: #d22b8f; */
+}
+
+.outside-bar{
+    height: 160px;
+    width: 160px;
+    /* border: 1px solid yellow; */
+    border-radius: 50%;
+    padding: 20px;
+    box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15), -6px -6px 10px -1px rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inside-bar{
+    height: 120px;
+    width: 120px;
+    box-shadow: inset 4px 4px 6px 1px rgba(0,0,0,0.2),
+    inset -4px -4px 6px -1px rgba(255,255,255,0.7), 
+    -0.5px -0.5px 0px rgba(255,255,255,1), 
+    0.5px 0.5px 0px rgba(0,0,0,0.15), 
+    0px 12px 10px -10px rgba(0,0,0,0.05);
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#number{
+    font-weight: 600;
+    color: black;
+}
+
 .upcoming-events-container{
     position:relative;
-    padding: 205px 160px;
-    background-color: rgba(195, 215, 249, 0.601);
-    margin-left: 75px;
+    padding: 12px 12px 16px; 
+    background-color: rgba(195, 215, 249);
+    margin-left: 45px;
     margin-top: 15px;
     border-radius: 20px;
     margin-bottom: 20px;
     align-self: center;
-
 }
 
-.upcoming-events-container div{
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding-right: 90px;
-    flex-direction: column;
-    /* background-color: rgb(16, 61, 138); */
-    border-radius: 12px;
-    margin: 20px;
-    font-weight: bold;
-    font-size: 17px ;
-    color: rgb(65, 0, 157);
-}
 
 .event-button{
     position: absolute;
@@ -224,17 +240,57 @@ body{
     color: rgb(65, 0, 157);
 }
 
-.specfic-event-container{
-    display: flex;
+.u-title{ 
+    position:absolute; 
+    top:0; 
+    left:0; 
+    margin:20px; 
+    font-weight:700; 
+    font-size:17px; 
+    color:rgb(65,0,157); 
+}
+
+.event-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  /* background:#fff; */
+  border-radius:12px;
+  padding:7px 20px;
+  margin-top:10px;        
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+
+.event-left{
+  display:flex;
+  align-items:center;
+  gap:12px;       
 }
 
 .circle{
-    flex: 0 0 2px;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    background-color: black;
-    display: inline-block;
-    overflow: hidden;
-
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:#d22b8f;     
 }
+
+.event-title{ 
+    font-weight:600; 
+    color:#222; 
+    white-space: nowrap;
+}
+
+.event-id{ 
+    color:#97a0ad; 
+    font-size:14px; 
+}
+
+.event-when{
+  font-weight:700;
+  color:#222;
+  margin-left:16px;
+  white-space:nowrap;    
+}
+
