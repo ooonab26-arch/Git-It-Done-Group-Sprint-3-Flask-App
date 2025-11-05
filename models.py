@@ -18,21 +18,20 @@ class Events(db.Model):
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    attendance = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.String(80), nullable=False)
+    attendance = db.Column(db.Integer, nullable=True)
+    location = db.Column(db.String(80), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
     # Foreign Keys (table names now match __tablename__ below)
-    advert_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'), nullable=False)
-    partner_id = db.Column(db.Integer, db.ForeignKey('partners.id'))
-    lead_organizer = db.Column(db.Integer, db.ForeignKey('organizers.id'), nullable=False)
-    type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'), nullable=False)
+    advert_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'), nullable=True)
+    partner_id = db.Column(db.Integer, db.ForeignKey('partners.id'), nullable=True)
+    lead_organizer = db.Column(db.Integer, db.ForeignKey('organizers.id'), nullable=True)
+    type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'), nullable=True)
 
 class Advertisement(db.Model):
     __tablename__ = "advertisement"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    # backref name must NOT clash with Event_Type's backref
     events = db.relationship('Events', backref='advertisement', lazy=True)
 
 class Partners(db.Model):
