@@ -1,5 +1,3 @@
-import os
-import csv
 from models import db, Events
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -34,67 +32,7 @@ if __name__ == "__main__":
 
 
 
-# app = Flask(__name__)
 
-# # ------------------------------------------------------------
-# # Configuration
-# # ------------------------------------------------------------
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///events.db'  # or 'postgresql://user:password@localhost/dbname'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db.init_app(app)
-
-# @app.before_request
-# def create_tables():
-#     db.create_all()
-
-# # ------------------------------------------------------------
-# # Route to load events from CSV
-# # ------------------------------------------------------------
-# @app.route('/')
-# def load_events():
-#     csv_path = os.path.join(app.root_path, 'SW_Events.csv')
-
-#     if not os.path.exists(csv_path):
-#         return f"CSV file not found at {csv_path}", 404
-
-#     with open('SW_Events.csv', newline='', encoding='utf-8') as csvfile:
-#         reader = csv.DictReader(csvfile)
-#         for row in reader:
-#             # Extract and parse the time range safely
-#             time_range = row['Time'].strip()
-#             try:
-#                 start_str, end_str = [t.strip() for t in time_range.split('-')]
-#                 start_time = datetime.strptime(start_str, '%I %p').time()
-#                 end_time = datetime.strptime(end_str, '%I %p').time()
-#             except ValueError:
-#                 print(f"⚠️ Skipping row with invalid time: {time_range}")
-#                 continue  # skip bad rows instead of crashing
-
-#             # Now safely create your event object
-#             event = Events(
-#                 title=row['Name of Event/Activity'],
-#                 date=datetime.strptime(row['Date'], '%d-%b-%y').date(),  # adjust format if needed
-#                 start_time=start_time,
-#                 end_time=end_time,
-#                 attendance=int(row['Attendance']) if row['Attendance'] else 0,
-#                 location=row['Location'],
-#                 description=None,  # optional
-#                 advert_id=1,       # placeholder, change as needed
-#                 partner_id=None,
-#                 lead_organizer=1,  # placeholder, change as needed
-#                 type_id=1
-#             )
-#             db.session.add(event)
-#         db.session.commit()
-#     return "Events loaded successfully from CSV!"
-
-
-# # ------------------------------------------------------------
-# # Run App
-# # ------------------------------------------------------------
-# if __name__ == '__main__':
-#     os.makedirs(os.path.join(app.root_path, 'data'), exist_ok=True)
-#     app.run(debug=True)
 
 
 
