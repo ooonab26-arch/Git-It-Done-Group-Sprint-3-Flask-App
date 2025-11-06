@@ -154,6 +154,7 @@ body {
 }
 
 .items {
+    table-layout: auto;
     width: 100%;
     border-collapse: collapse;
 }
@@ -172,11 +173,15 @@ body {
     text-align: left;
 }
 
-@media (max-width: 900px) {
-    /* body {
-        flex-direction: column;
-    } */
 
+.event-table .event-count {
+
+   text-align: center;
+
+
+}
+
+@media (max-width: 900px) {
     .sidebar {
         width: 100%;
         height: auto;
