@@ -9,99 +9,167 @@ new Chart("myChart", {
   data: { labels: xVals, datasets: [{ data: yVals }] },
   options: {}
 });
-// -----------------------------------------------------------------
 
 const ORIGIN = window.location.origin;
 
-// Return the selected year if a <select> exists, else null (“all years”)
-function getYear() {
-  const sel = document.querySelector("select");
-  if (!sel) return null;
-  const v = (sel.value || "").trim();
-  if (!v || /^all( years)?$/i.test(v)) return null;
-  const n = Number(v.replace(/[^\d]/g, ""));
-  return Number.isFinite(n) ? n : null;
-}
-
-// Robust fetch helper so errors are readable
 async function fetchJSON(url, options) {
   let res;
-  try {
-    res = await fetch(url, options);
-  } catch (e) {
-    throw new Error("Network error: " + e.message);
-  }
+  try { res = await fetch(url, options); } catch (e) { throw new Error("Network error: " + e.message); }
   const text = await res.text();
-  let data = null;
-  try { data = JSON.parse(text); } catch (_) {}
-  if (!res.ok) {
-    const msg = (data && (data.message || data.error)) || text || res.statusText;
-    throw new Error(msg);
-  }
+  let data = null; try { data = JSON.parse(text); } catch {}
+  if (!res.ok) throw new Error((data && (data.message || data.error)) || text || res.statusText);
   return data ?? {};
 }
 
-// Find a button by visible text (no IDs required)
 function findButton(label) {
   const norm = s => (s || "").trim().toLowerCase();
-  const want = norm(label);
-  const els = [...document.querySelectorAll("button,a")];
-  return els.find(el => norm(el.textContent) === want) || null;
+  return [...document.querySelectorAll("button,a")]
+    .find(el => norm(el.textContent) === norm(label)) || null;
 }
 
-// Click handlers
-async function onCreateReport(ev) {
-  ev?.preventDefault?.();
-  const btn = ev?.currentTarget || this;
-  btn && (btn.disabled = true);
-  const y = getYear();
-  const payload = (y !== null) ? { year: y } : {};
-
+// fallback to years seen in the chart if the API returns none
+function yearsFromChart() {
   try {
-    // Try POST first
-    const res = await fetch(`${ORIGIN}/api/reports/generate`, {
+    const labels = Array.isArray(xVals) ? xVals : [];
+    const ys = new Set();
+    for (const s of labels) {
+      const m = String(s).match(/\b(\d{4})\b/);
+      if (m) ys.add(Number(m[1]));
+    }
+    return Array.from(ys).sort((a,b)=>a-b);
+  } catch { return []; }
+}
+
+// --- Year popover ---
+function showYearPicker(anchor, years) {
+  document.getElementById("year-popover")?.remove();
+  const box = document.createElement("div");
+  box.id = "year-popover";
+  box.style.position = "absolute";
+  box.style.zIndex = "99999";
+  box.style.background = "white";
+  box.style.border = "1px solid #e5e7eb";
+  box.style.borderRadius = "12px";
+  box.style.padding = "10px";
+  box.style.boxShadow = "0 8px 24px rgba(0,0,0,.12)";
+
+  const sel = document.createElement("select");
+  sel.style.minWidth = "140px";
+  // populate
+  const opts = [`<option value="all">All years</option>`]
+    .concat((years || []).map(y => `<option value="${y}">${y}</option>`));
+  sel.innerHTML = opts.join("");
+
+  const row = document.createElement("div");
+  row.style.display = "flex"; row.style.gap = "8px"; row.style.marginTop = "8px";
+
+  const ok = document.createElement("button"); ok.textContent = "OK"; ok.className = "btn";
+  const cancel = document.createElement("button"); cancel.textContent = "Cancel"; cancel.className = "btn";
+
+  row.append(ok, cancel);
+  box.append(sel, row);
+  document.body.appendChild(box);
+
+  const r = anchor.getBoundingClientRect();
+  box.style.left = `${window.scrollX + r.left}px`;
+  box.style.top  = `${window.scrollY + r.bottom + 8}px`;
+
+  return { box, sel, ok, cancel };
+}
+
+async function pickYearAndRun(anchor, thenDo) {
+  let years = [];
+  try { years = await fetchJSON(`${ORIGIN}/api/events/years`); } catch {}
+  if (!years || years.length === 0) {
+    // fallback from chart labels
+    years = yearsFromChart();
+  }
+  const { box, sel, ok, cancel } = showYearPicker(anchor, years);
+  const close = () => box.remove();
+
+  ok.addEventListener("click", () => {
+    const v = sel.value;
+    const year = (!v || v === "all") ? null : Number(v);
+    close(); thenDo(year);
+  });
+  cancel.addEventListener("click", close);
+  setTimeout(() => {
+    document.addEventListener("click", function onDoc(e){
+      if (!box.contains(e.target) && e.target !== anchor) { close(); document.removeEventListener("click", onDoc); }
+    });
+  }, 0);
+}
+
+// --- Actions ---
+// Open the created report immediately (no banner)
+async function createReportWithYear(year, btn) {
+  btn && (btn.disabled = true);
+  try {
+    const payload = (Number.isFinite(year)) ? { year } : {};
+    const data = await fetchJSON(`${ORIGIN}/api/reports/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    const text = await res.text();
-    let data = null; try { data = JSON.parse(text); } catch(_) {}
-    if (!res.ok) throw new Error((data && (data.message||data.error)) || text || res.statusText);
-
-    window.open(data.url, "_blank", "noopener");
+    window.open(data.url, "_blank", "noopener");  // <= open new tab
   } catch (e) {
-    // Fallback to GET navigation so we avoid fetch/CORS/preflight issues entirely
-    const qs = y !== null ? `?year=${encodeURIComponent(y)}` : "";
-    window.location.href = `${ORIGIN}/api/reports/generate${qs}`;
-    // (the browser will show JSON; then click the "url" value, or keep using Download button)
+    alert("Failed to generate report: " + e.message);
+    console.error(e);
   } finally {
     btn && (btn.disabled = false);
   }
 }
 
+// Download the HTML report
+async function downloadReportWithYear(year) {
+  // 1) Generate the report first so we have the filename/url
+  const payload = Number.isFinite(year) ? { year } : {};
+  const data = await fetchJSON(`${ORIGIN}/api/reports/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-function onDownloadReport(ev) {
-  ev?.preventDefault?.();
-  const y = getYear();
-  const url = (y !== null)
-    ? `${ORIGIN}/api/reports/export.csv?year=${encodeURIComponent(y)}`
-    : `${ORIGIN}/api/reports/export.csv`;
-  window.location.href = url;
+  // 2) Force download via Blob (never navigates the current tab)
+  const u = new URL(data.url, ORIGIN);
+  u.searchParams.set("download", "1");
+
+  const res = await fetch(u, { credentials: "same-origin" });
+  if (!res.ok) throw new Error(`Download failed: ${res.status} ${res.statusText}`);
+
+  const blob = await res.blob();
+  const fname = u.pathname.split("/").pop() || "report.html";
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;          // forces "Save As…" with this filename
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 0);
 }
 
-// Bind once after DOM is ready and ensure buttons aren’t under overlays
+
+
+// --- Bindings ---
 document.addEventListener("DOMContentLoaded", () => {
   const createBtn = findButton("Create Report");
   const downloadBtn = findButton("Download Report");
 
   if (createBtn) {
-    createBtn.style.position = "relative";
-    createBtn.style.zIndex = "10000";
-    createBtn.addEventListener("click", onCreateReport);
+    createBtn.style.position = "relative"; createBtn.style.zIndex = "10000";
+    createBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      pickYearAndRun(createBtn, (yr) => createReportWithYear(yr, createBtn));
+    });
   }
   if (downloadBtn) {
-    downloadBtn.style.position = "relative";
-    downloadBtn.style.zIndex = "10000";
-    downloadBtn.addEventListener("click", onDownloadReport);
+    downloadBtn.style.position = "relative"; downloadBtn.style.zIndex = "10000";
+    downloadBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      pickYearAndRun(downloadBtn, (yr) => downloadReportWithYear(yr));
+    });
   }
 });
