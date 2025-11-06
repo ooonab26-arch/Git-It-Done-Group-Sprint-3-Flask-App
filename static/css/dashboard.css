@@ -138,7 +138,7 @@ body{
 
 .event-performance-container{
     position: relative;
-    padding: 160px;
+    padding: 40px;
     background-color: rgb(195, 215, 249);
     /* margin-left: 20px; */
     border-radius: 20px;
@@ -146,16 +146,24 @@ body{
 }
 
 .event-performance-container div{
-        position: absolute;
-        top: 0;
-        left: 0;
-        flex-direction: column;
-        background-color: rgb(195, 215, 249);
-        border-radius: 12px;
-        margin: 20px;
-        font-weight: bold;
-        font-size: 17px ;
-        color: rgb(65, 0, 157);
+    position: absolute;
+    top: 0;
+    left: 0;
+    flex-direction: column;
+    background-color: rgb(195, 215, 249);
+    border-radius: 12px;
+    margin: 20px;
+    font-weight: bold;
+    font-size: 17px ;
+    color: rgb(65, 0, 157);
+}
+
+
+#eventPerformanceChart{
+    width: 90%;
+    max-width: 700px;
+    height: auto;
+    margin-top: 40px;
 }
 
 .per-breakdown-container{

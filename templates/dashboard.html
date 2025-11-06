@@ -75,6 +75,7 @@
                     </div>
                     <!-- Event Performance  -->
                     <div class="event-performance-container">
+                        <canvas id="eventPerformanceChart"></canvas>
                         <div> Event Performance</div>
                     </div>
                 </div>
@@ -230,10 +231,10 @@
         // labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         labels: {{ months|tojson }},
         datasets: [{
-        label: 'No of attendees',
+        label: 'Event Growth(%)',
         // data: chartData.attendances,
         // data: [500,700,600,500,300,330,400,600,700,800,900,1000],
-        data: {{ attendance|tojson }},
+        data: {{ growth|tojson }},
         backgroundColor: "rgb(65, 0, 157)",
         borderColor: "rgb(65, 0, 157)",
         borderWidth: 1,
