@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
     <!--Poppins Font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7,6 +11,9 @@
 
     <!--Style Sheets -->
     <link rel="stylesheet" href="../static/css/dashboard.css">
+
+    <!--Chart.js CDN-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 <body>
@@ -63,10 +70,12 @@
                     </div>
                     <!-- Attendance Report -->
                     <div class="attendance-container">
+                        <canvas id="attendanceChart"></canvas>
                         <div> Attendance Report</div> 
                     </div>
                     <!-- Event Performance  -->
                     <div class="event-performance-container">
+                        <canvas id="eventPerformanceChart"></canvas>
                         <div> Event Performance</div>
                     </div>
                 </div>
@@ -165,6 +174,8 @@
                                 <div class="event-when">In 2 days</div>
                               </div>
                           </div>
+                        </div>
+                        
             
 
         </div>
@@ -173,3 +184,79 @@
         </div>
     </div>
 </body>
+
+<!-- <script src="../static/js/script.js"> -->
+<script>
+  const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+  const ctx2 = document.getElementById('eventPerformanceChart').getContext('2d');
+
+  let monthly_attendance_chart = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+          // labels: chartData.months,
+          // labels: month_data,
+          // labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          labels: {{ months|tojson }},
+          datasets: [{
+          label: 'No of attendees',
+          // data: chartData.attendances,
+          // data: [500,700,600,500,300,330,400,600,700,800,900,1000],
+          data: {{ attendance|tojson }},
+          backgroundColor: "rgb(65, 0, 157)",
+          borderColor: "rgb(65, 0, 157)",
+          borderWidth: 1,
+          borderRadius:{
+            topRight: 5,
+            topLeft: 5,
+            bottomLeft: 5,
+            bottomRight: 5,
+          },
+          borderSkipped: false
+          }]
+      },
+      options: {
+          scales: {
+          y: {
+              beginAtZero: true
+          }
+          }
+      }
+  });
+
+  let event_performance_chart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        // labels: chartData.months,
+        // labels: month_data,
+        // labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: {{ months|tojson }},
+        datasets: [{
+        label: 'Event Growth(%)',
+        // data: chartData.attendances,
+        // data: [500,700,600,500,300,330,400,600,700,800,900,1000],
+        data: {{ growth|tojson }},
+        backgroundColor: "rgb(65, 0, 157)",
+        borderColor: "rgb(65, 0, 157)",
+        borderWidth: 1,
+        borderRadius:{
+          topRight: 5,
+          topLeft: 5,
+          bottomLeft: 5,
+          bottomRight: 5,
+        },
+        borderSkipped: false
+        }]
+    },
+    options: {
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        }
+    }
+});
+
+
+</script>
+
+</html>
