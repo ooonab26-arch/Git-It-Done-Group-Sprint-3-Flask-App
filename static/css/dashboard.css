@@ -152,10 +152,10 @@ body{
 
 .per-breakdown-container{
     position: relative;
-    padding: 160px 160px;
+    padding: 50px ;
     background-color: rgb(195, 215, 249);
     margin-left: 45px;
-    margin-top: 30px;
+    margin-top: 5px;
     border-radius: 20px;
     margin-bottom: 20px;
     align-self: center;
@@ -172,49 +172,54 @@ body{
         color: rgb(65, 0, 157);
 }
  
-.progress-bar{
-    width: 100px;
-    height: 100px;
-    /* background-color: #d22b8f; */
-}
-
-.outside-bar{
-    height: 160px;
-    width: 160px;
-    /* border: 1px solid yellow; */
+.chart{
+    margin-top: 5px;
+    margin-left: 40px;
+    justify-items: center;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    padding: 20px;
-    box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15), -6px -6px 10px -1px rgba(255,255,255,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: conic-gradient(
+    rgb(255, 115, 0) 0% 14%,
+    rgb(52, 183, 52) 14% 50%,
+    rgb(108, 108, 255) 50% 75%,
+    pink 75% 100%);
 }
 
-.inside-bar{
-    height: 120px;
-    width: 120px;
-    box-shadow: inset 4px 4px 6px 1px rgba(0,0,0,0.2),
-    inset -4px -4px 6px -1px rgba(255,255,255,0.7), 
-    -0.5px -0.5px 0px rgba(255,255,255,1), 
-    0.5px 0.5px 0px rgba(0,0,0,0.15), 
-    0px 12px 10px -10px rgba(0,0,0,0.05);
-    border-radius: 50%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.label-display{
+    display:flex;
+    align-items:center;
+    justify-content:space-between; 
+    width:100%;
+    gap:10px;
+    margin-top:10px;              
 }
-
-#number{
-    font-weight: 600;
-    color: black;
-}
+  
+.indicator-group{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+  }
+  
+.indicator{
+    width:10px;
+    height:10px;
+    border-radius:20%;
+    background-color:pink;  /* overridden by inline colors above */
+  }
+  
+.indicator-text{
+    font-weight:bold;
+    font-size:10px;
+  }
 
 .upcoming-events-container{
     position:relative;
-    padding: 12px 12px 16px; 
+    padding: 6px 12px 10px; 
     background-color: rgba(195, 215, 249);
     margin-left: 45px;
-    margin-top: 15px;
+    margin-top: 10px;
     border-radius: 20px;
     margin-bottom: 20px;
     align-self: center;
