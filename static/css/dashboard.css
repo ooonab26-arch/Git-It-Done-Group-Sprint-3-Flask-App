@@ -107,12 +107,13 @@ body{
 }
 
 .attendance-container{
-    padding: 110px;
+    padding: 50px;
     background-color: rgb(195, 215, 249);
     /* margin-left: 10px; */
     border-radius: 20px;
     margin-bottom: 20px;
     position: relative;
+    align-items: center;
 }
 
 .attendance-container div {
@@ -126,6 +127,13 @@ body{
     font-weight: bold;
     font-size: 17px ;
     color: rgb(65, 0, 157);
+}
+
+#attendanceChart{
+    width: 90%;
+    max-width: 700px;
+    height: auto;
+    margin-top: 40px;
 }
 
 .event-performance-container{
