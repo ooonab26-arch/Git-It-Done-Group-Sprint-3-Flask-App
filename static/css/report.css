@@ -52,6 +52,9 @@ body {
     cursor: pointer;
     color: white;
     list-style: none;
+    text-align: center;
+    position: relative;
+    right: 10%;
 
 }
 
@@ -59,6 +62,7 @@ body {
     background-color:rgb(90, 20, 200);
     color: white;
     border-radius: 30px;
+    justify-content: center ;
 }
 
 .content {
