@@ -15,6 +15,7 @@ const myChart = new Chart ("myChart", {
         labels: xVals,
 
         datasets: [{
+            label: 'Blue Line',
             data: yVals
         }]
     },

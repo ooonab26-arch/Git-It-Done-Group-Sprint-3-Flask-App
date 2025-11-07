@@ -135,8 +135,14 @@ body {
     color:black;
     font-weight: 600;
     position: relative;
-    bottom: 70px;
+    bottom: 48%;
 
+}
+
+#myChart{
+    position: relative;
+    justify-content: center;
+    right: 5%;
 }
 
 .card-two {
