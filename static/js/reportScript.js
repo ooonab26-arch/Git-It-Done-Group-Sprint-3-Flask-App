@@ -5,7 +5,7 @@ const xVals = ['2023-10-25', '2023-11-07', '2023-12-06',
 const yVals = [7, 5.5, 3, 1, 3, 2, 1, 5, 1, 2];
 
 new Chart("myChart", {
-  type: "line",
+  type: "bar",
   data: { 
     labels: xVals, 
     datasets: [{ 
