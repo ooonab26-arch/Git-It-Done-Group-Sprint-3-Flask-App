@@ -5,6 +5,7 @@ body {
     display: flex;
     background-color: #f8f9ff;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .header{
@@ -40,6 +41,12 @@ body {
 }
 
 .sidebar {
+
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background-color: rgb(65, 0, 157);
+    flex: 0 0 18%;
     
     background-color: rgb(65, 0, 157);
 
@@ -212,11 +219,7 @@ body {
 }
 
 @media (max-width: 900px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
+   
 
     .content {
         margin-left: 0;
