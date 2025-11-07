@@ -36,6 +36,7 @@ body {
     background-color: whitesmoke;
     padding: 5px;
     border-radius: 6px;
+    margin-top: 20%;
 }
 
 .sidebar {
@@ -179,6 +180,20 @@ body {
    text-align: center;
 
 
+}
+
+.event-name{
+    text-align: center;
+}
+
+.event-icon{
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background:#d22b8f;   
+  vertical-align: middle;
+  margin-right: 8px;  
 }
 
 @media (max-width: 900px) {
