@@ -232,7 +232,6 @@ def create_app():
 
     @app.get("/api/events/years")
     def events_years():
-        """Return sorted list of years present in the CSV."""
         years = set()
         if os.path.exists(CSV_PATH):
             with open(CSV_PATH, newline="", encoding="utf-8") as f:
@@ -256,10 +255,6 @@ def create_app():
 
     @app.get("/api/reports/download")
     def download_report():
-        """
-        Generate the same HTML report as /api/reports/generate and return it as a download.
-        Usage: /api/reports/download?year=2024    (omit year for 'All years')
-        """
         # --- reuse your generator logic ---
         try:
             y = request.args.get("year", type=int)
@@ -288,7 +283,6 @@ def create_app():
         return send_file(path, as_attachment=True, download_name=fname, mimetype="text/html")
 
     def _coerce_date(s: str):
-        """Return a datetime.date from various CSV formats (e.g., 2023-10-25 or 25-Jan-25)."""
         if not s:
             return None
         s = s.strip()
@@ -304,12 +298,6 @@ def create_app():
             return None
 
     def build_report_html(rows, summary, year=None):
-        """
-        rows: list[dict] with keys like 'title', 'date', 'start', 'end', 'attendance', 'location', 'type'
-        summary: dict with at least 'total_events' and 'total_attendance'
-        year: int | None
-        Returns: (html_string, filename)
-        """
         ts = datetime.now().strftime("%Y%m%d-%H%M%S")
         tag = str(year) if year else "all"
         fname = f"report_{tag}_{ts}.html"
