@@ -1,5 +1,5 @@
 from models import db, Events
-from flask import Flask
+from flask import Flask,  render_template
 from flask_sqlalchemy import SQLAlchemy
 from load_data import load_events
 from views import main_blueprint
@@ -24,6 +24,15 @@ def create_app():
     
     return app 
 
+# link to different documents
+@main_blueprint.route("/")
+def home():
+    events = Events.query.all()
+    return render_template("dashboard.html", events=events)
+
+@main_blueprint.route("/report")
+def report():
+    return render_template("report.html")
 
 if __name__ == "__main__":
     app = create_app()
