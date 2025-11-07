@@ -1,9 +1,6 @@
 from flask import jsonify, request
 from models import db, Events
-<<<<<<< HEAD
-=======
 from flask import Flask, jsonify, request, send_file, send_from_directory, render_template, current_app
->>>>>>> aaf20e065a03eab42a841dd4143b2d2355d28ede
 from flask_sqlalchemy import SQLAlchemy
 from load_data import load_events
 from views import main_blueprint
