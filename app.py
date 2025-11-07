@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, send_file, send_from_directory, rende
 from flask_sqlalchemy import SQLAlchemy
 from load_data import load_events
 from views import main_blueprint
+from werkzeug.exceptions import HTTPException, NotFound
 import os
 import io
 import csv
@@ -478,10 +479,17 @@ def create_app():
 
     @app.errorhandler(Exception)
     def api_errors(e):
-        if request.path.startswith('/api/'):
-            # keep it terse; you can add traceback if you want
-            return jsonify({"error": str(e)}), 500
-        raise e
+        # If it's a normal Flask/Werkzeug HTTP error (like 404), return it as-is.
+        if isinstance(e, HTTPException):
+            # Special-case favicon 404 to reduce log noise (optional)
+            if isinstance(e, NotFound) and request.path == "/favicon.ico":
+                return ("", 204)  # no content, no error in logs
+            return e
+
+        # Otherwise it's a real server error. Log it and return JSON 500.
+        current_app.logger.exception(e)
+        return jsonify(error="Internal Server Error"), 500
+
 
     return app
 
