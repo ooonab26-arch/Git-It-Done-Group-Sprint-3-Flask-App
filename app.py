@@ -8,6 +8,8 @@ import os
 import io
 import csv
 from datetime import datetime
+import json
+import calendar
 
 CSV_PATH = os.environ.get("EVENTS_CSV", os.path.join(
     os.path.dirname(__file__), "SW_Events.csv"))
@@ -129,49 +131,103 @@ def create_app():
         rows = read_csv(year)
         fallback_used = False
         if year and not rows:
-            # No rows for the requested year -> fall back to "all"
             rows = read_csv(year=None)
             fallback_used = True
 
         summary = summarize(rows)
 
-        # build HTML
+        # Title and note
         title = f"Events Report {year}" if year and not fallback_used else "Events Report (All Years)"
         note = "" if (year and not fallback_used) else (
             f"<p style='color:#6b7280'>No rows found for {year}. Showing all years.</p>" if year else ""
         )
 
+        # Prepare chart data
+        by_month = summary['by_month']
+        js_month_labels = list(by_month.keys())
+        js_events_series = [by_month[m]['events'] for m in js_month_labels]
+        js_att_series = [by_month[m]['attendance'] for m in js_month_labels]
+
+        # Fake pie chart grouping by event type
+        type_counts = {}
+        for r in rows:
+            t = r.get('type', 'Unknown') or 'Unknown'
+            type_counts[t] = type_counts.get(t, 0) + 1
+
+        js_pie_labels = list(type_counts.keys())
+        js_pie_values = list(type_counts.values())
+
+        # HTML layout
         html = [
             "<!doctype html><meta charset='utf-8'><title>Events Report</title>",
-            "<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px}"
-            ".card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:12px 0}"
-            "table{border-collapse:collapse;width:100%}th,td{border:1px solid #e5e7eb;padding:8px;text-align:left}th{background:#f8fafc}"
-            "h1{margin:0 0 16px}</style>",
+            """<style>
+            body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px}
+            .card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:12px 0}
+            .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+            .chart-350{position:relative;height:350px;}
+            .chart-350>canvas{width:100%!important;height:100%!important;display:block}
+            table{border-collapse:collapse;width:100%}
+            th,td{border:1px solid #e5e7eb;padding:8px;text-align:left}
+            th{background:#f8fafc}
+            </style>""",
             f"<h1>{title}</h1>",
             note,
             f"<div class='card'><b>Total Events:</b> {summary['total_events']}<br><b>Total Attendees:</b> {summary['total_attendees']}</div>",
-            "<div class='card'><h3>By Month</h3><table><thead><tr><th>Month</th><th>Events</th><th>Attendance</th></tr></thead><tbody>"
+            "<div class='grid'>"
+            "  <div class='card'>"
+            "    <h3 style='margin-top:0'>Events by Month</h3>"
+            "    <div class='chart-350'><canvas id='lineChart'></canvas></div>"
+            "  </div>"
+            "  <div class='card'>"
+            "    <h3 style='margin-top:0'>Events by Type</h3>"
+            "    <div class='chart-350'><canvas id='pieChart'></canvas></div>"
+            "  </div>"
+            "</div>",
         ]
-        months = sorted(summary['by_month'].keys(),
-                        key=lambda m: datetime.strptime(m, '%b').month)
-        for m in months:
-            html.append(
-                f"<tr><td>{m}</td><td>{summary['by_month'][m]['events']}</td><td>{summary['by_month'][m]['attendance']}</td></tr>")
-        html.append("</tbody></table></div>")
+
+        # Event table
         html.append("<div class='card'><h3>Events</h3><table><thead><tr><th>Title</th><th>Date</th><th>Start</th><th>End</th><th>Attendance</th><th>Location</th><th>Type</th></tr></thead><tbody>")
         for r in rows[:100]:
             d = r['date'].isoformat() if r['date'] else ''
             html.append(
-                f"<tr><td>{r['title']}</td><td>{d}</td><td>{r['start_time']}</td><td>{r['end_time']}</td><td>{r['attendance']}</td><td>{r['location']}</td><td>{r['type']}</td></tr>")
+                f"<tr><td>{r['title']}</td><td>{d}</td><td>{r['start_time']}</td><td>{r['end_time']}</td><td>{r['attendance']}</td><td>{r['location']}</td><td>{r['type']}</td></tr>"
+            )
         html.append("</tbody></table></div>")
+
+        # Chart.js initialization
+        html.append(
+            "<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>"
+            "<script>(function(){"
+            f"const monthLabels={js_month_labels};"
+            f"const eventsSeries={js_events_series};"
+            f"const pieLabels={js_pie_labels};"
+            f"const pieValues={js_pie_values};"
+
+            "new Chart(document.getElementById('lineChart'), {"
+            "  type:'line',"
+            "  data:{ labels:monthLabels, datasets:[{ label:'Events', data:eventsSeries, fill:false, borderColor:'#3B82F6', tension:0.2 }] },"
+            "  options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:true} }, scales:{ y:{ beginAtZero:true, ticks:{precision:0} } } }"
+            "});"
+
+            "new Chart(document.getElementById('pieChart'), {"
+            "  type:'pie',"
+            "  data:{ labels:pieLabels, datasets:[{ data:pieValues, backgroundColor:['#3B82F6','#10B981','#F59E0B','#EF4444','#6366F1','#EC4899'] }] },"
+            "  options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }"
+            "});"
+
+            "})();</script>"
+        )
+
         html = ''.join(html)
 
-        # save under instance/reports and return a public URL
+        # Save report
         ts = datetime.now().strftime('%Y%m%d-%H%M%S')
         fname = f"report_{year if year else 'all'}_{ts}.html"
-        out_dir = os.path.join(app.instance_path, "reports")
-        with open(os.path.join(out_dir, fname), "w", encoding="utf-8") as fp:
+        out_dir = os.path.join(app.instance_path, 'reports')
+        os.makedirs(out_dir, exist_ok=True)
+        with open(os.path.join(out_dir, fname), 'w', encoding='utf-8') as fp:
             fp.write(html)
+
         return jsonify({"report_id": fname, "url": f"/reports/files/{fname}", "format": "html"})
 
     @app.get("/api/events/years")
@@ -216,11 +272,14 @@ def create_app():
         os.makedirs(out_dir, exist_ok=True)
 
         # generate the HTML string the same way as in /api/reports/generate:
-        rows = read_csv(y) if y else read_csv(None)      # <- uses your existing helper
+        rows = read_csv(y) if y else read_csv(
+            None)      # <- uses your existing helper
         if y and not rows:
             rows = read_csv(None)
-        summary = summarize(rows)                         # <- your existing helper
-        html_str, fname = build_report_html(rows, summary, y)   # <- factor tiny helper as shown below
+        # <- your existing helper
+        summary = summarize(rows)
+        # <- factor tiny helper as shown below
+        html_str, fname = build_report_html(rows, summary, y)
 
         path = os.path.join(out_dir, fname)
         with open(path, "w", encoding="utf-8") as f:
@@ -228,41 +287,186 @@ def create_app():
 
         return send_file(path, as_attachment=True, download_name=fname, mimetype="text/html")
 
-    def build_report_html(rows, summary, year=None):
-        from datetime import datetime
+    def _coerce_date(s: str):
+        """Return a datetime.date from various CSV formats (e.g., 2023-10-25 or 25-Jan-25)."""
+        if not s:
+            return None
+        s = s.strip()
+        # Try ISO first
+        try:
+            return datetime.fromisoformat(s).date()
+        except Exception:
+            pass
+        # Try 25-Jan-25
+        try:
+            return datetime.strptime(s, "%d-%b-%y").date()
+        except Exception:
+            return None
 
-        # Pick filename like: report_2024_20251106-161045.html
+    def build_report_html(rows, summary, year=None):
+        """
+        rows: list[dict] with keys like 'title', 'date', 'start', 'end', 'attendance', 'location', 'type'
+        summary: dict with at least 'total_events' and 'total_attendance'
+        year: int | None
+        Returns: (html_string, filename)
+        """
         ts = datetime.now().strftime("%Y%m%d-%H%M%S")
         tag = str(year) if year else "all"
         fname = f"report_{tag}_{ts}.html"
 
-        # Build a simple HTML document string (reuse your CSS + template parts)
-        html_parts = [
-            "<!DOCTYPE html>",
-            "<html><head>",
-            "<meta charset='utf-8'/>",
-            f"<title>Report {tag}</title>",
-            "<style>",
-            "body { font-family: Arial, sans-serif; margin: 2em; }",
-            "table { border-collapse: collapse; width: 100%; }",
-            "th, td { border: 1px solid #ddd; padding: 8px; }",
-            "th { background-color: #f5f5f5; }",
-            "</style>",
-            "</head><body>",
-            f"<h1>Events Report {tag}</h1>",
-            f"<p><strong>Total Events:</strong> {summary['total_events']}</p>",
-            f"<p><strong>Total Attendance:</strong> {summary['total_attendance']}</p>",
-            "<table><thead><tr><th>Title</th><th>Date</th><th>Attendance</th></tr></thead><tbody>"
-        ]
+        # ---- Build series for charts ----
+        # Normalize and aggregate
+        monthly_counts = {m: 0 for m in range(1, 13)}   # events per month
+        type_counts = {}                                 # pie by event type
 
-        for r in rows:
-            html_parts.append(
-                f"<tr><td>{r['title']}</td><td>{r['date']}</td><td>{r['attendance']}</td></tr>"
-            )
+        for r in rows or []:
+            # Date
+            d = _coerce_date(r.get("date") or r.get("Date"))
+            if d:
+                monthly_counts[d.month] = monthly_counts.get(d.month, 0) + 1
 
-        html_parts.append("</tbody></table></body></html>")
+            # Type
+            t = (r.get("type") or r.get("Type") or "").strip()
+            if t:
+                type_counts[t] = type_counts.get(t, 0) + 1
 
-        return "".join(html_parts), fname
+        # Prepare chart arrays
+        line_labels = [calendar.month_abbr[m] for m in range(1, 13)]
+        line_data_events = [monthly_counts.get(m, 0) for m in range(1, 13)]
+
+        pie_labels = list(type_counts.keys()) or ["No type data"]
+        pie_data = list(type_counts.values()) or [
+            summary.get("total_events", 0)]
+
+        # ---- Compose HTML ----
+        total_events = summary.get("total_events", 0)
+        total_attendance = summary.get("total_attendance", 0)
+
+        # JSON for Chart.js
+        jl = json.dumps(line_labels)
+        jd_events = json.dumps(line_data_events)
+        jp_labels = json.dumps(pie_labels)
+        jp_data = json.dumps(pie_data)
+
+        title_text = f"Events Report ({'All Years' if not year else year})"
+
+        html = f"""<!doctype html>
+        <html>
+        <head>
+        <meta charset="utf-8" />
+        <title>{title_text}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            :root {{ --card:#ffffff; --muted:#f2f4f7; --text:#111827; --sub:#6b7280; }}
+            body {{ font-family: -apple-system, Segoe UI, Roboto, Inter, system-ui, sans-serif; background:#fff; color:var(--text); margin:24px; }}
+            .wrap {{ max-width: 1100px; margin: 0 auto; }}
+            h1 {{ margin: 0 0 12px 0; }}
+            .pill {{ display:inline-block; background:var(--muted); padding:4px 10px; border-radius:999px; font-size:12px; }}
+            .grid {{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; }}
+            .card {{ background:var(--card); border:1px solid #e5e7eb; border-radius:12px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); }}
+            .kpis {{ display:flex; gap:12px; margin-bottom:16px; }}
+            .kpi {{ background:var(--card); border:1px solid #e5e7eb; border-radius:12px; padding:12px 14px; }}
+            table {{ width:100%; border-collapse: collapse; }}
+            th, td {{ padding:10px; border-bottom:1px solid #eef2f7; text-align:left; }}
+            th {{ background:#f8fafc; }}
+            .mt16 {{ margin-top:16px; }}
+            .mt24 {{ margin-top:24px; }}
+        </style>
+        </head>
+        <body>
+        <div class="wrap">
+        <h1>{title_text}</h1>
+        <div class="kpis">
+            <div class="kpi"><div class="pill">Total Events</div><div style="font-size:28px; font-weight:700;">{total_events}</div></div>
+            <div class="kpi"><div class="pill">Total Attendees</div><div style="font-size:28px; font-weight:700;">{total_attendance}</div></div>
+        </div>
+
+        <div class="grid mt16">
+            <div class="card">
+            <h3 style="margin:0 0 10px 0;">Events by Month</h3>
+            <canvas id="lineChart" height="140"></canvas>
+            </div>
+            <div class="card">
+            <h3 style="margin:0 0 10px 0;">Events by Type</h3>
+            <canvas id="pieChart" height="140"></canvas>
+            </div>
+        </div>
+
+        <div class="card mt24">
+            <h3 style="margin:0 0 10px 0;">Events</h3>
+            <table>
+            <thead>
+                <tr>
+                <th>Title</th><th>Date</th><th>Start</th><th>End</th><th>Attendance</th><th>Location</th><th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {''.join(f"<tr><td>{(r.get('title') or r.get('Title') or '').strip()}</td>"
+                         f"<td>{(r.get('date') or r.get('Date') or '').strip()}</td>"
+                         f"<td>{(r.get('start') or r.get('Start') or '').strip()}</td>"
+                         f"<td>{(r.get('end') or r.get('End') or '').strip()}</td>"
+                         f"<td>{(r.get('attendance') or r.get('Attendance') or 0)}</td>"
+                         f"<td>{(r.get('location') or r.get('Location') or '').strip()}</td>"
+                         f"<td>{(r.get('type') or r.get('Type') or '').strip()}</td></tr>"
+                         for r in (rows or []))}
+            </tbody>
+            </table>
+        </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+        (function() {{
+        // Data embedded from Python
+        const lineLabels = {jl};
+        const eventsPerMonth = {jd_events};
+        const pieLabels = {jp_labels};
+        const pieData = {jp_data};
+
+        // Line chart (events per month)
+        new Chart(document.getElementById('lineChart'), {{
+            type: 'line',
+            data: {{
+            labels: lineLabels,
+            datasets: [{{
+                label: 'Events',
+                data: eventsPerMonth,
+                fill: false
+            }}]
+            }},
+            options: {{
+            responsive: true,
+            plugins: {{
+                legend: {{ display: true }}
+            }},
+            scales: {{
+                y: {{ beginAtZero: true, ticks: {{ precision: 0 }} }}
+            }}
+            }}
+        }});
+
+        // Pie chart (by type)
+        new Chart(document.getElementById('pieChart'), {{
+            type: 'pie',
+            data: {{
+            labels: pieLabels,
+            datasets: [{{
+                data: pieData
+            }}]
+            }},
+            options: {{
+            responsive: true,
+            plugins: {{
+                legend: {{ position: 'bottom' }}
+            }}
+            }}
+        }});
+        }})();
+        </script>
+        </body>
+        </html>"""
+
+        return html, fname
 
     @app.get("/reports/files/<path:filename>")
     def serve_report_file(filename):
@@ -292,6 +496,7 @@ def create_app():
         raise e
 
     return app
+
 
 if __name__ == "__main__":
     app = create_app()
