@@ -6,7 +6,12 @@ const yVals = [7, 5.5, 3, 1, 3, 2, 1, 5, 1, 2];
 
 new Chart("myChart", {
   type: "line",
-  data: { labels: xVals, datasets: [{ data: yVals }] },
+  data: { 
+    labels: xVals, 
+    datasets: [{ 
+        data: yVals, 
+        label: 'Blue Line'
+    }] },
   options: {}
 });
 

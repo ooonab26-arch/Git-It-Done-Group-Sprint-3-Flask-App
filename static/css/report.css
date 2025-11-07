@@ -190,6 +190,17 @@ body {
     text-align: center;
 }
 
+.card-name{
+    position: relative;
+    bottom: 48%;
+}
+
+#myChart{
+    position: relative;
+    right: 5%;
+
+}
+
 .event-icon{
   display: inline-block;
   width: 20px;
