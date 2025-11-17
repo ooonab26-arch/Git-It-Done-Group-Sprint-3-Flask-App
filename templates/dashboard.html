@@ -84,6 +84,7 @@
                 <div class = "right-section">
                         <!-- Performance Breakdown -->
                         <div class="per-breakdown-container">
+                            <!-- <canvas id="performanceBreakdown"></canvas> -->
                             <div class="per-break-title">Performance Breakdown</div>
                             <div class="chart"> </div>
                             <div class="label-display">
@@ -224,6 +225,7 @@
 <script>
   const ctx1 = document.getElementById('attendanceChart').getContext('2d');
   const ctx2 = document.getElementById('eventPerformanceChart').getContext('2d');
+  const ctx3 = document.getElementById('eventPerformanceChart').getContext('2d');
 
   let monthly_attendance_chart = new Chart(ctx1, {
       type: 'bar',
