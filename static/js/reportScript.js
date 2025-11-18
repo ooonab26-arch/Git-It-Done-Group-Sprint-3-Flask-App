@@ -160,8 +160,8 @@ async function downloadReportWithYear(year) {
 
 // --- Bindings ---
 document.addEventListener("DOMContentLoaded", () => {
-  const createBtn = findButton("Create Report");
-  const downloadBtn = findButton("Download Report");
+  const createBtn = document.getElementById("btn-generate");
+  const downloadBtn = document.getElementById("btn-export");
 
   if (createBtn) {
     createBtn.style.position = "relative"; createBtn.style.zIndex = "10000";
