@@ -36,7 +36,7 @@ def parse_time(tstr):
 
 
 def load_events():
-    csv_path = os.path.join(os.path.dirname(__file__), 'SW_Events.csv')
+    csv_path = os.path.join(os.path.dirname(__file__), 'data\SW_Events_2.csv')
     
     with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)

@@ -62,4 +62,41 @@ def dashboard():
         for r in category_results
     ]
 
-    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages)
+  # --- Suggest top 4 upcoming events ---
+    popular_month = (
+        db.session.query(
+            extract('month', Events.date).label('month'),
+            func.sum(Events.attendance).label('total_attendance')
+        )
+        .group_by('month')
+        .order_by(func.sum(Events.attendance).desc())
+        .first()
+    )
+
+    suggested_month = popular_month.month if popular_month else datetime.now().month
+
+    top_events = (
+        db.session.query(
+            Events.id,
+            Events.date,
+            Event_Type.name.label('category'),
+            Events.attendance
+        )
+        .join(Event_Type, Events.type_id == Event_Type.id)
+        .order_by(Events.attendance.desc())
+        .limit(4)
+        .all()
+    )
+
+    suggestions = [
+        {
+            "event_type": e.category,
+            "day": e.date.day,
+            "month": month_name[e.date.month]
+        }
+        for e in top_events
+    ]
+
+    print(suggestions)
+
+    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions)

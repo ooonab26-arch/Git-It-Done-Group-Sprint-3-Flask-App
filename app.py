@@ -1,7 +1,6 @@
 from flask import jsonify, request
 from models import db, Events
 from flask import Flask, jsonify, request, send_file, send_from_directory, render_template, current_app
-from flask_sqlalchemy import SQLAlchemy
 from load_data import load_events
 from views import main_blueprint
 from werkzeug.exceptions import HTTPException, NotFound
