@@ -55,7 +55,7 @@ def load_events():
                 continue
 
             # Event type
-            type_name = clean_cell(row.get('Type'))
+            type_name = clean_cell(row.get('EventType'))
             type_id = return_id(Event_Type, type_name) if type_name else None
             
             # Create Event

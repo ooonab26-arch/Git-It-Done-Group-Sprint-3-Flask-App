@@ -280,7 +280,7 @@
             </div>
             <div class="card-body p-3">
               <div class="chart">
-                <canvas id="attendanceBarChart" class="chart-canvas" height="300"></canvas>
+                <canvas id="attendanceChart" class="chart-canvas" height="300"></canvas>
               </div>
             </div>
           </div>
@@ -405,212 +405,216 @@
   <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/chartjs.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/argon-dashboard.min.js') }}?v=2.1.0"></script>
 
-  <script>
-    const ctx1 = document.getElementById('attendanceBarChart').getContext('2d');
-    const ctx2 = document.getElementById('performancePieChart').getContext('2d');
-    const ctx3 = document.getElementById('eventPerformanceChart').getContext('2d');
+<script>
+  const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+  const ctx2 = document.getElementById('eventPerformanceChart').getContext('2d');
+  const ctx3 = document.getElementById('performancePieChart').getContext('2d');
 
+  /* -------------------- GRADIENT FOR BAR AND LINE -------------------- */
+  var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+  gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
+  gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
+  gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
 
-    var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+  /* -------------------- MONTHLY ATTENDANCE (BAR CHART) -------------------- */
+  let monthly_attendance_chart = new Chart(ctx1, {
+    type: "bar",
+    data: {
+      labels: {{ months | tojson }},
+      datasets: [{
+        label: "Attendance",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        borderColor: "#5e72e4",
+        backgroundColor: gradientStroke1,
+        borderWidth: 3,
+        fill: true,
+        data: {{ attendance | tojson }},
+        maxBarThickness: 6
+      }],
+    },
 
-    gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
-    gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
-    gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
-
-    let monthly_attendance_chart = new Chart(ctx1, {
-      type: "bar",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0.4,
-          borderWidth: 0,
-          pointRadius: 0,
-          borderColor: "#5e72e4",
-          backgroundColor: gradientStroke1,
-          borderWidth: 3,
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
-
-        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
+      interaction: { intersect: false, mode: 'index' },
+      scales: {
+        y: {
+          grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: false,
+            borderDash: [5, 5]
+          },
+          ticks: {
+            display: true,
+            padding: 10,
+            color: '#fbfbfb',
+            font: { size: 11, family: "Open Sans", style: 'normal', lineHeight: 2 }
           }
         },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#fbfbfb',
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
+        x: {
+          grid: {
+            drawBorder: false,
+            display: false
           },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#ccc',
-              padding: 20,
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    }); 
-
-
- let performance_breakdown_chart = new Chart(ctx2, {
-  type: 'pie',
-  data: {
-    labels: ['Jan','Oct','Nov','Dec'],
-    datasets: [{
-      label: 'Event Attendance',
-      data: [500, 700, 350, 450],
-      backgroundColor: [
-        'rgba(94, 114, 228, 0.8)',
-        'rgba(45, 206, 137, 0.8)',
-        'rgba(255, 159, 64, 0.8)',
-        'rgba(255, 99, 132, 0.8)'
-      ],
-      borderColor: '#fff',
-      borderWidth: 2
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          boxWidth: 12,
-          padding: 15
+          ticks: {
+            display: true,
+            color: '#ccc',
+            padding: 20,
+            font: { size: 11, family: "Open Sans", style: 'normal', lineHeight: 2 }
+          }
         }
       }
     }
-  }
-}); 
+  });
 
-let event_attendance_chart = new Chart(ctx3, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0.4,
-          borderWidth: 0,
-          pointRadius: 0,
-          borderColor: "#2e25e9",
-          backgroundColor: gradientStroke1,
-          borderWidth: 3,
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
+  /* -------------------- EVENT GROWTH (LINE CHART) -------------------- */
+  let event_performance_chart = new Chart(ctx2, {
+    type: "line",
+    data: {
+      labels: {{ months | tojson }},
+      datasets: [{
+        label: "Event Growth (%)",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        borderColor: "#2e25e9",
+        backgroundColor: gradientStroke1,
+        fill: true,
+        borderWidth: 3,
+        data: {{ growth | tojson }},
+      }],
+    },
 
-        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
       },
-      options: {
+      interaction: { intersect: false, mode: 'index' },
+      scales: {
+        y: {
+          grid: {
+            drawBorder: false,
+            display: true,
+            borderDash: [5, 5]
+          },
+          ticks: {
+            display: true,
+            padding: 10,
+            color: '#fbfbfb',
+            font: { size: 11, family: "Open Sans", style: 'normal', lineHeight: 2 }
+          }
+        },
+        x: {
+          grid: { drawBorder: false, display: false },
+          ticks: {
+            display: true,
+            color: '#ccc',
+            padding: 20,
+            font: { size: 11, family: "Open Sans", style: 'normal', lineHeight: 2 }
+          }
+        }
+      }
+    }
+  });
+
+let performance_breakdown_chart = new Chart(ctx3, {
+    type: 'doughnut',
+    data: {
+        labels: {{ category_percentages | map(attribute='category') | list | tojson }},
+        datasets: [{
+            label: 'Event Category Breakdown (%)',
+            data: {{ category_percentages | map(attribute='percentage') | list | tojson }},
+            backgroundColor: [
+                "rgb(65, 0, 157)",
+                "rgb(0, 102, 204)",
+                "rgb(0, 153, 51)",
+                "rgb(255, 153, 0)"
+            ],
+            borderColor: [
+                "rgb(65, 0, 157)",
+                "rgb(0, 102, 204)",
+                "rgb(0, 153, 51)",
+                "rgb(255, 153, 0)"
+            ],
+            borderWidth: 2,
+            cutout: '70%',
+            borderRadius: 15
+        }]
+    },
+
+    options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false,
+            position: 'bottom',
+            labels: {
+              boxWidth: 12,
+              padding: 15,
+            }
           }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#fbfbfb',
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#ccc',
-              padding: 20,
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
+        }
+    },
 
+    plugins: [{
+        id: 'overlappingSegments',
+        afterDatasetsDraw(chart, args, pluginOptions) {
+            const { ctx, data } = chart;
+            console.log(chart.getDatasetMeta(0).data[0])
+            const x = chart.getDatasetMeta(0).data[0].x;
+            const y = chart.getDatasetMeta(0).data[0].y;
+            const angle = Math.PI/180;
 
+            
+            chart.getDatasetMeta(0).data.forEach((value,index) => {
+              const innerRadius = chart.getDatasetMeta(0).data[index].innerRadius;
+              const outerRadius = chart.getDatasetMeta(0).data[index].outerRadius;
+              const endAngle = chart.getDatasetMeta(0).data[index].endAngle;
 
+              // POSITION: midpoint of the doughnut thickness
+              const midRadius = (innerRadius + outerRadius) / 2;
 
+              // SIZE: thickness / 2
+              const dotRadius = (outerRadius - innerRadius) / 2;
 
+              // Small sweep of positions around the intersection
+              const coordinates = [];
+              for (let i = -0.1; i <= 0.1; i += 0.01) {
+                  const angle = endAngle + i;
+                  const xCoor = midRadius * Math.cos(angle);
+                  const yCoor = midRadius * Math.sin(angle);
+                  coordinates.push({ x: xCoor, y: yCoor });
+              }
 
-    
-  </script>
-
+              // Draw dots
+              ctx3.save();
+              ctx3.fillStyle = data.datasets[0].backgroundColor[index];
+              ctx3.translate(x, y);
+              
+              coordinates.forEach(({ x, y }) => {
+                  ctx3.beginPath();
+                  ctx3.arc(x, y, dotRadius, 0, angle * 360,false);
+                  ctx3.fill();
+              });
+              
+              ctx3.restore();
+                       
+            }) 
+        }
+    }]
+});
+</script>
   
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>

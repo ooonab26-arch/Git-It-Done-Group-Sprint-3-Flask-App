@@ -1,11 +1,11 @@
-Name of Event/Activity,Lead Organizer,Date,Start Time,End Time,Length (Hours),Location,Attendance,Partners,Advertisement,Posters,Instagram Post,ColbyNow
-Wellness Fair & Flu Shot Clinic,"Employee Wellness, SW",25-Oct-23,9am,4pm,7,Field House,0,Dean of Sudents,"Posters, ColbyNow",TRUE,FALSE,TRUE
-Travel Physicals,"MaineGeneral, SW",7-Nov-23,3pm,8:30pm,5.5,"Robins Room, Roberts Hall",0,None,None,FALSE,FALSE,FALSE
-Stressbusters,SHOC,6-Dec-23,11am,2pm,3,Spa,0,None,"Posters, Instagram",TRUE,TRUE,FALSE
-Financial Mindfulness & Stress Management,"SFS, SW",20-Feb-24,4pm,5pm,1,Pugh Center,5,Pugh Center,"Posters, Instagram",TRUE,TRUE,FALSE
-Sexploration,SHOC,12-Apr-24,11am,2pm,3,Spa,0,None,"Posters, Instagram",TRUE,TRUE,FALSE
-Self-Care for Student Leaders,"Counseling, SW",17-Apr-24,3:30pm,5:30pm,2,Diamond,30,CCAK,None,FALSE,FALSE,FALSE
-Wellness Resources for SVP,"SVP, SW",22-Apr-24,7pm,8pm,1,Diamond 122,50,None,None,FALSE,FALSE,FALSE
-Blood Drive,SHOC,23-Apr-24,11am,4pm,5,Missing,0,Red Cross,"Posters, Instagram",TRUE,TRUE,FALSE
-Life After Colby,Pugh Center,26-Apr-24,12pm,1pm,1,Pugh Center,0,None,"Posters, Instagram",TRUE,TRUE,FALSE
-Stressbusters,SHOC,7-May-24,11am,1pm,2,Spa,0,None,"Posters, Instagram",TRUE,TRUE,FALSE
+Name of Event/Activity,Lead Organizer,Date,Start Time,End Time,Length (Hours),Location,Attendance,Partners,Advertisement,Posters,Instagram Post,ColbyNow,EventType
+Wellness Fair & Flu Shot Clinic,"Employee Wellness, SW",25-Oct-23,9am,4pm,7,Field House,0,Dean of Sudents,"Posters, ColbyNow",TRUE,FALSE,TRUE,Wellness
+Travel Physicals,"MaineGeneral, SW",7-Nov-23,3pm,8:30pm,5.5,"Robins Room, Roberts Hall",0,None,None,FALSE,FALSE,FALSE,Wellness
+Stressbusters,SHOC,6-Dec-23,11am,2pm,3,Spa,0,None,"Posters, Instagram",TRUE,TRUE,FALSE,Discussion
+Financial Mindfulness & Stress Management,"SFS, SW",20-Feb-24,4pm,5pm,1,Pugh Center,5,Pugh Center,"Posters, Instagram",TRUE,TRUE,FALSE,Presentation
+Sexploration,SHOC,12-Apr-24,11am,2pm,3,Spa,0,None,"Posters, Instagram",TRUE,TRUE,FALSE,Discussion
+Self-Care for Student Leaders,"Counseling, SW",17-Apr-24,3:30pm,5:30pm,2,Diamond,30,CCAK,None,FALSE,FALSE,FALSE,Workshop
+Wellness Resources for SVP,"SVP, SW",22-Apr-24,7pm,8pm,1,Diamond 122,50,None,None,FALSE,FALSE,FALSE,Wellness
+Blood Drive,SHOC,23-Apr-24,11am,4pm,5,Missing,0,Red Cross,"Posters, Instagram",TRUE,TRUE,FALSE,Wellness
+Life After Colby,Pugh Center,26-Apr-24,12pm,1pm,1,Pugh Center,0,None,"Posters, Instagram",TRUE,TRUE,FALSE,Workshop
+Stressbusters,SHOC,7-May-24,11am,1pm,2,Spa,0,None,"Posters, Instagram",TRUE,TRUE,FALSE,Wellness
