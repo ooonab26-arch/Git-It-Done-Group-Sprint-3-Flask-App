@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -50,7 +51,12 @@ class Event_Type(db.Model):
     name = db.Column(db.String(200), nullable=False)
     events = db.relationship('Events', backref='event_type', lazy=True)
 
-# Association tables (FKs now match table names above)
+class ProcessedFile(db.Model):
+    __tablename__ = 'processed_files'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(400), unique=True, nullable=False)
+    processed_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 event_organizers = db.Table(
     'event_organizers',
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
