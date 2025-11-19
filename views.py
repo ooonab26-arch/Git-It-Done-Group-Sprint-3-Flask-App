@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Events
+from models import db, Events, Event_Type
 from flask import Flask, Blueprint, render_template
 from sqlalchemy import extract, func
 from datetime import datetime
@@ -40,4 +40,28 @@ def dashboard():
     attendance_twelve_months = [month_to_attendance.get(m, 0) for m in all_months]
     growth_twelve_months = [month_to_growth.get(m, 0) for m in all_months]
 
-    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months)
+# ---- Event category percentage breakdown ----
+    category_results = (
+        db.session.query(
+            Event_Type.name.label("category"),
+            func.count(Events.id).label("count")
+        )
+        .join(Events, Events.type_id == Event_Type.id)
+        .group_by(Event_Type.name)
+        .all()
+    )
+
+    total_event_count = sum(r.count for r in category_results)
+
+    # Safely compute percentages
+    category_percentages = [
+        {
+            "category": r.category,
+            "count": r.count,
+            "percentage": round((r.count / total_event_count) * 100, 2) if total_event_count else 0
+        }
+        for r in category_results
+    ]
+
+
+    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages)

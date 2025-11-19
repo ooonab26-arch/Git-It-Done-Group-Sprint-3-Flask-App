@@ -1,0 +1,114 @@
+/* ---- TOP CARDS ---- */
+.custom-top-card {
+  padding: 18px 0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.custom-top-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.custom-top-card h6 {
+  font-size: 30px;
+  color: #000;
+  margin-top: 4px;
+}
+
+.custom-top-card p {
+  font-size: 13px;
+  letter-spacing: .3px;
+  color: #5a5a5a;
+}
+
+.row.top-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+.custom-content-grid {
+  display: grid;
+  grid-template-columns: 65% 35%;
+  gap: 25px;
+}
+
+/* Left column charts stacked */
+.left-stack > .card {
+  margin-bottom: 20px;
+}
+
+/* Right column – Performance Breakdown and Upcoming Events */
+.right-stack > .card {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Performance Breakdown height */
+.performance-card {
+  height: 300px;
+}
+
+/* Upcoming Events card taller */
+.upcoming-card {
+  height: 520px;
+}
+
+/* ---- Attendance & Event Performance chart styling ---- */
+
+.card-header h6 {
+  font-weight: bold;
+}
+
+.chart {
+  padding: 10px;
+}
+
+/* ---- Clean list-like event rows ---- */
+
+.event-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.event-row:hover {
+  background: #f3f3f3;
+}
+
+.event-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.event-title {
+  font-weight: 600;
+}
+
+.circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #7c5cff;
+}
+
+
+
+#eventPerformanceChart {
+  width: 100% !important;
+  height: 260px !important;
+}
+
+
+main.main-content {
+  padding-top: 80px; 
+}
