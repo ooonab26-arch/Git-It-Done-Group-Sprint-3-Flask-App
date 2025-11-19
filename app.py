@@ -476,9 +476,9 @@ def create_app():
     def reports_page():
         return render_template("report.html")
 
-    @app.route("/events")
-    def events():
-        return render_template("event.html")
+    # @app.route("/events")
+    # def events():
+    #     return render_template("event.html")
 
     @app.errorhandler(Exception)
     def api_errors(e):

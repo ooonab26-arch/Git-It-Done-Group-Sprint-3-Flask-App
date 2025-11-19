@@ -29,6 +29,10 @@ class Events(db.Model):
     lead_organizer = db.Column(db.Integer, db.ForeignKey('organizers.id'), nullable=True)
     type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'), nullable=True)
 
+    partners = db.relationship('Partners', secondary='event_partners', backref=db.backref('events', lazy='dynamic'),lazy='dynamic')
+
+    organizer_obj = db.relationship('Organizer', foreign_keys=[lead_organizer])
+
 class Advertisement(db.Model):
     __tablename__ = "advertisement"
     id = db.Column(db.Integer, primary_key=True)
