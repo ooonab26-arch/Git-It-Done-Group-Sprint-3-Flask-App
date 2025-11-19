@@ -53,7 +53,6 @@ def dashboard():
 
     total_event_count = sum(r.count for r in category_results)
 
-    # Safely compute percentages
     category_percentages = [
         {
             "category": r.category,
@@ -62,6 +61,5 @@ def dashboard():
         }
         for r in category_results
     ]
-
 
     return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages)

@@ -187,11 +187,11 @@ body{
         color: rgb(65, 0, 157);
 }
  
-#performanceBreakdown{
+#performancePieChart{
     width: 80%;
-    max-width: 700px;
+    max-width: 50px;
     height: auto;
-    margin-top: 40px;
+    margin-top: 10px;
 }
 
 
