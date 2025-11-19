@@ -61,7 +61,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{{ url_for('homepage.event') }}">
+          <a class="nav-link active" href="{{ url_for('homepage.events_page') }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
             </div>
@@ -258,216 +258,39 @@
                       <th class="text-secondary opacity-7"></th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
+                <tbody>
+                  {% for event in events %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="event">
                         </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ event.title }}</h6>
+                          <p class="text-xs text-secondary mb-0">Description:</p>
                         </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-                    </tr>
+                      </div>
+                    </td>
+                    <td class="align-middle text-center">
+                      <p class="text-xs font-weight-bold mb-0">{{ event.date.strftime('%m/%d/%y') }}</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="badge badge-sm bg-gradient-primary">{{ event.location }}</span>
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold">{{ event.attendance }}</span>
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold">{{ event.lead_organizer }}</span>
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold">{{ event.partners }}</span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
 
-
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-                    </tr>
-
-
-                    <tr>
-
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-                    </tr>
-
-
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../static/images/team-4.jpg" class="avatar avatar-sm me-3" alt="user6">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Money Mindfullness</h6>
-                            <p class="text-xs text-secondary mb-0">Description:</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">11/12/25</p>
-                        <!-- <p class="text-xs text-secondary mb-0">Developer</p> -->
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">Miller</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">56</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Event Lead</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Dining</span>
-                      </td>
-                    </tr>
-                  </tbody>
                 </table>
               </div>
             </div>
