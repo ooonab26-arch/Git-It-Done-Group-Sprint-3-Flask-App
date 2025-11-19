@@ -506,6 +506,20 @@ def home():
 def report():
     return render_template("report.html")
 
+
+@main_blueprint.route("/event")
+def event():
+    return render_template("event.html")
+
+@main_blueprint.route("/sign-in")
+def signIn():
+    return render_template("sign-in.html")
+
+
+@main_blueprint.route("/sign-up")
+def signUp():
+    return render_template("sign-up.html")
+
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
