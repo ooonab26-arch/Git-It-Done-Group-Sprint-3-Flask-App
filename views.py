@@ -4,6 +4,8 @@ from flask import Flask, Blueprint, render_template
 from sqlalchemy import extract, func
 from datetime import datetime
 from calendar import month_name
+from flask import request, redirect, url_for
+
 
 main_blueprint = Blueprint('homepage', __name__)
 
@@ -128,3 +130,41 @@ def events_page():
         })
 
     return render_template('event.html', events=event_list)
+
+@main_blueprint.route('/add-event', methods=['POST'])
+def add_event():
+    title = request.form.get('title')
+    date_str = request.form.get('date')
+    location = request.form.get('location')
+    attendance = request.form.get('attendance')
+    lead_organizer = request.form.get('lead_organizer')
+    type_id = request.form.get('type_id')
+    partner_ids = request.form.get('partner_ids')
+
+    # Convert date
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+    # Create event
+    new_event = Events(
+        title=title,
+        date=date_obj,
+        location=location,
+        attendance=int(attendance),
+        lead_organizer=int(lead_organizer),
+        type_id=int(type_id)
+    )
+
+    db.session.add(new_event)
+    db.session.commit()
+
+    # # Add partners many-to-many
+    # if partner_ids:
+    #     ids = [int(pid.strip()) for pid in partner_ids.split(",") if pid.strip().isdigit()]
+    #     for pid in ids:
+    #         partner_obj = Organizer.query.get(pid)
+    #         if partner_obj:
+    #             new_event.partners.append(partner_obj)
+
+    db.session.commit()
+
+    return redirect(url_for('homepage.events_page'))
