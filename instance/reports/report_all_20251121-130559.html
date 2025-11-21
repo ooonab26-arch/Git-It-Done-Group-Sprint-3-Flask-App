@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename='images/apple-icon.png')}}">
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename= 'images/favicon.png') }}">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/images/apple-icon.png">
+  <link rel="icon" type="image/png" href="/static/images/favicon.png">
   <title>Colby Wellness Center</title>
 
   <!-- Fonts and icons -->
@@ -13,7 +13,7 @@
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link id="pagestyle" href="{{ url_for('static', filename='css/argon-dashboard.css') }}" rel="stylesheet" />
+  <link id="pagestyle" href="/static/css/argon-dashboard.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="g-sidenav-show bg-gray-100">
@@ -30,7 +30,7 @@
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('homepage.dashboard') }}">
+          <a class="nav-link" href="/">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
             </div>
@@ -38,7 +38,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="{{ url_for('homepage.events_page') }}">
+          <a class="nav-link " href="/events">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
             </div>
@@ -64,7 +64,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link active" href="{{ url_for('homepage.report_page') }}">
+          <a class="nav-link active" href="/report">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-app text-dark text-sm opacity-10"></i>
             </div>
@@ -86,7 +86,7 @@
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="{{ url_for('homepage.profile') }}">
+          <a class="nav-link " href="/profile">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
             </div>
@@ -95,7 +95,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link " href="{{ url_for('auth.signIn') }}">
+          <a class="nav-link " href="/signin">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
             </div>
@@ -103,7 +103,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="{{ url_for('auth.signUp') }}">
+          <a class="nav-link " href="/signup">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-collection text-dark text-sm opacity-10"></i>
             </div>
@@ -170,11 +170,11 @@
     <!-- Main Container -->
     <div class="container-fluid py-4">
 
-      <!-- Event Summary Chart -->
+      <!-- Event Summary Card -->
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">
-            <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+            <div class="card-header pb-0">
               <h6>Event Summary</h6>
             </div>
             <div class="card-body p-1">
@@ -205,34 +205,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for eve in events %}
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1 align-items-center">
-                          <img src="{{ url_for('static', filename='images/team-4.jpg') }}" class="avatar avatar-sm me-3" alt="user">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ eve.title }}</h6>
-                            <p class="text-xs text-secondary mb-0">ID: {{ eve.id }}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">{{ eve.date.strftime('%Y-%m-%d') }}</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-primary">{{ eve.location }}</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">{{ eve.attendance }}</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">{{ eve.lead_organizer }}</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">{{ eve.partners }}</span>
-                      </td>
-                    </tr>
-                    {% endfor %}
+                    <!-- JS will dynamically insert data here -->
                   </tbody>
                 </table>
               </div>
@@ -245,30 +218,50 @@
   </main>
 
   <!-- Core JS -->
-  <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/chartjs.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/argon-dashboard.min.js') }}?v=2.1.0"></script>
-  <script src="{{ url_for('static', filename='js/reportScript.js') }}" defer></script>
+  <script src="/static/js/core/popper.min.js"></script>
+  <script src="/static/js/core/bootstrap.min.js"></script>
+  <script src="/static/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="/static/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="/static/js/plugins/chartjs.min.js"></script>
+  <script src="/static/js/argon-dashboard.min.js?v=2.1.0"></script>
+  <script src="/static/js/reportScript.js"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const ctx = document.getElementById('eventSummary').getContext('2d');
-      window.eventSummaryChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: {{ months|tojson }},
-          datasets: [{
-            label: 'Attendance',
-            data: {{ attendance|tojson }},
-            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+    // Initialize chart
+    const ctx = document.getElementById('eventSummary').getContext('2d');
+    let eventSummaryChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: [], datasets: [{ label: 'Event Attendance', data: [], backgroundColor: ['rgba(94, 114, 228, 0.8)'], borderColor: '#fff', borderWidth: 2 }] },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    // Generate report dynamically
+    document.getElementById('btn-generate').addEventListener('click', async () => {
+      const resp = await fetch('/api/reports/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      const data = await resp.json();
+
+      // Update chart
+      eventSummaryChart.data.labels = data.chart.labels;
+      eventSummaryChart.data.datasets[0].data = data.chart.values;
+      eventSummaryChart.update();
+
+      // Update table
+      const tbody = document.querySelector('#eventOverviewTable tbody');
+      tbody.innerHTML = '';
+      data.events.forEach(e => {
+        const row = `<tr>
+          <td>${e.title}</td>
+          <td class="text-center">${e.date}</td>
+          <td class="text-center">${e.location}</td>
+          <td class="text-center">${e.attendance}</td>
+          <td class="text-center">${e.office_role || ''}</td>
+          <td class="text-center">${e.collaborators || ''}</td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
       });
     });
   </script>
