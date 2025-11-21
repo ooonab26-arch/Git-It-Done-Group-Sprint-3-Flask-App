@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 from datetime import datetime
 from models import db, Events, Advertisement, Partners, Organizer, Event_Type, event_organizers, event_partners
 
@@ -34,6 +35,46 @@ def parse_time(tstr):
     except ValueError:
         return None
 
+def parse_flexible_date(value):
+    """
+    Accept formats like:
+      - 25-Jul-24
+      - November 6, 2024
+      - November 6-7, 2024  → take the 6th
+      - Nov 6-7 2024
+    """
+    if not value:
+        return None
+
+    v = value.strip()
+
+    # Case 1: standard dd-Mon-yy
+    try:
+        return datetime.strptime(v, "%d-%b-%y").date()
+    except:
+        pass
+
+    # Case 2: long format (November 6, 2024)
+    try:
+        return datetime.strptime(v, "%B %d, %Y").date()
+    except:
+        pass
+
+    # Case 3: extract first date from ranges (e.g., "November 6-7, 2024")
+    m = re.search(r"([A-Za-z]+)\s+(\d+)", v)
+    y = re.search(r"(\d{4})", v)
+
+    if m and y:
+        month = m.group(1)
+        day = m.group(2)
+        year = y.group(1)
+        try:
+            return datetime.strptime(f"{month} {day} {year}", "%B %d %Y").date()
+        except:
+            pass
+
+    return None
+
 
 def load_events():
     csv_path = os.path.join(os.path.dirname(__file__), 'data/SW_Events_2.csv')
@@ -43,7 +84,10 @@ def load_events():
         for row in reader:
             # Parse date safely
             try:
-                date = datetime.strptime(row['Date'], "%d-%b-%y").date()
+                date = parse_flexible_date(row['Date'])
+                if not date:
+                    print(f"Skipping row due to invalid date: {row.get('Date')}")
+                    continue
             except ValueError:
                 print(f"Skipping row due to invalid date: {row.get('Date')}")
                 continue

@@ -8,8 +8,6 @@ from flask import request, redirect, url_for, current_app, render_template, json
 from report_gen import read_events, summarize
 import os
 
-
-
 main_blueprint = Blueprint('homepage', __name__)
 
 @main_blueprint.route('/')
@@ -289,20 +287,20 @@ def generate_report():
     js_pie_labels = list(type_counts.keys())
     js_pie_values = list(type_counts.values())
 
-    # render HTML via template
+    # 🔴 CHANGE THIS LINE:
+    # html = render_template("report.html", ...)
     html = render_template(
-        "report.html",
+        "standalone_report.html",   # <- new template name
         title=title,
         note=note,
         summary=summary,
         rows=rows,
         months=months,
-        attendance=attendance,
+        attendance=attendance,      # here “attendance” = events/month series
         js_pie_labels=js_pie_labels,
-        js_pie_values=js_pie_values
+        js_pie_values=js_pie_values,
     )
 
-    # save report to /instance/reports/
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
     fname = f"report_{year if year else 'all'}_{ts}.html"
 
@@ -323,3 +321,18 @@ def generate_report():
 def serve_report(filename):
     out_dir = os.path.join(current_app.instance_path, "reports")
     return send_from_directory(out_dir, filename)
+
+@main_blueprint.get('/api/events/years')
+def api_get_years():
+    """
+    Return a JSON list of distinct years that have events in the DB,
+    e.g. [2023, 2024, 2025].
+    """
+    years = (
+        db.session.query(extract('year', Events.date).label('year'))
+        .group_by('year')
+        .order_by('year')
+        .all()
+    )
+    year_list = [int(row.year) for row in years]
+    return jsonify(year_list)
