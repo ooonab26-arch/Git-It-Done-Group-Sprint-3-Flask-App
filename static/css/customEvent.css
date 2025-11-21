@@ -1,3 +1,23 @@
+
+.sidenav {
+
+  overflow-y: visible !important;
+}
+
+
+.ps{
+
+  overflow: visible !important;
+}
+
+.sidenav .navbar-collapse{
+  height: auto !important;
+  max-height: none !important;
+}
+
+
+
+
 @media (min-width: 1200px) {
   #addEventModal .modal-dialog.modal-lg{
     margin-right: 6rem !important;

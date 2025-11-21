@@ -109,6 +109,22 @@
 }
 
 
-main.main-content {
+/* main.main-content {
   padding-top: 80px; 
+} */
+
+.sidenav {
+
+  overflow-y: visible !important;
+}
+
+
+.ps{
+
+  overflow: visible !important;
+}
+
+.sidenav .navbar-collapse{
+  height: auto !important;
+  max-height: none !important;
 }
