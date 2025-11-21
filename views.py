@@ -103,9 +103,7 @@ def dashboard():
 
     return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions)
 
-
-@main_blueprint.route('/events')
-def events_page():
+def getEventsList():
     # Query all events from most recent to oldest
     events = db.session.query(Events).order_by(Events.date.desc()).all()
 
@@ -128,9 +126,21 @@ def events_page():
             "lead_organizer": organizer_name,
             "partners": ", ".join(partner_names)  # join multiple partners into a string
         })
+    
+    return event_list
 
-    return render_template('event.html', events=event_list)
+@main_blueprint.route('/events')
+def events_page():
+    curEventList = getEventsList()
 
+    return render_template('event.html', events=curEventList)
+
+@main_blueprint.route('/report')
+def report_page():
+    curEventList = getEventsList()
+
+    return render_template('report.html', events=curEventList)
+    
 @main_blueprint.route('/add-event', methods=['POST'])
 def add_event():
     title = request.form.get('title')
