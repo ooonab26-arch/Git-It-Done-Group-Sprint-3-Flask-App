@@ -520,6 +520,10 @@ def signIn():
 def signUp():
     return render_template("sign-up.html")
 
+@main_blueprint.route("/profile")
+def profile():
+    return render_template("profile.html")
+
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
