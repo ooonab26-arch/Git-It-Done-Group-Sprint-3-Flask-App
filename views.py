@@ -1,9 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Events, Event_Type
+from models import db, Events, Event_Type, Organizer
 from flask import Flask, Blueprint, render_template
 from sqlalchemy import extract, func
 from datetime import datetime
 from calendar import month_name
+from flask import request, redirect, url_for
+
 
 main_blueprint = Blueprint('homepage', __name__)
 
@@ -62,4 +64,117 @@ def dashboard():
         for r in category_results
     ]
 
-    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages)
+  # --- Suggest top 4 upcoming events ---
+    popular_month = (
+        db.session.query(
+            extract('month', Events.date).label('month'),
+            func.sum(Events.attendance).label('total_attendance')
+        )
+        .group_by('month')
+        .order_by(func.sum(Events.attendance).desc())
+        .first()
+    )
+
+    suggested_month = popular_month.month if popular_month else datetime.now().month
+
+    top_events = (
+        db.session.query(
+            Events.id,
+            Events.date,
+            Event_Type.name.label('category'),
+            Events.attendance
+        )
+        .join(Event_Type, Events.type_id == Event_Type.id)
+        .order_by(Events.attendance.desc())
+        .limit(4)
+        .all()
+    )
+
+    suggestions = [
+        {
+            "event_type": e.category,
+            "day": e.date.day,
+            "month": month_name[e.date.month]
+        }
+        for e in top_events
+    ]
+
+    print(suggestions)
+
+    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions)
+
+def getEventsList():
+    # Query all events from most recent to oldest
+    events = db.session.query(Events).order_by(Events.date.desc()).all()
+
+    # Prepare data for the template
+    event_list = []
+    for e in events:
+        # lead_organizer name
+        organizer = db.session.query(Organizer).filter_by(id=e.lead_organizer).first()
+        organizer_name = organizer.name if organizer else "N/A"
+
+        # partners names (many-to-many)
+        partner_names = [p.name for p in e.partners] if e.partners else []
+
+        event_list.append({
+            "id": e.id,
+            "title": e.title,
+            "date": e.date,
+            "location": e.location,
+            "attendance": e.attendance,
+            "lead_organizer": organizer_name,
+            "partners": ", ".join(partner_names)  # join multiple partners into a string
+        })
+    
+    return event_list
+
+@main_blueprint.route('/events')
+def events_page():
+    curEventList = getEventsList()
+
+    return render_template('event.html', events=curEventList)
+
+@main_blueprint.route('/report')
+def report_page():
+    curEventList = getEventsList()
+
+    return render_template('report.html', events=curEventList)
+    
+@main_blueprint.route('/add-event', methods=['POST'])
+def add_event():
+    title = request.form.get('title')
+    date_str = request.form.get('date')
+    location = request.form.get('location')
+    attendance = request.form.get('attendance')
+    lead_organizer = request.form.get('lead_organizer')
+    type_id = request.form.get('type_id')
+    partner_ids = request.form.get('partner_ids')
+
+    # Convert date
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+    # Create event
+    new_event = Events(
+        title=title,
+        date=date_obj,
+        location=location,
+        attendance=int(attendance),
+        lead_organizer=int(lead_organizer),
+        type_id=int(type_id)
+    )
+
+    db.session.add(new_event)
+    db.session.commit()
+
+    # # Add partners many-to-many
+    # if partner_ids:
+    #     ids = [int(pid.strip()) for pid in partner_ids.split(",") if pid.strip().isdigit()]
+    #     for pid in ids:
+    #         partner_obj = Organizer.query.get(pid)
+    #         if partner_obj:
+    #             new_event.partners.append(partner_obj)
+
+    db.session.commit()
+
+    return redirect(url_for('homepage.events_page'))

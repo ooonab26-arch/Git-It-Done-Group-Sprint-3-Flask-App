@@ -478,6 +478,10 @@ def create_app():
     def reports_page():
         return render_template("report.html")
 
+    # @app.route("/events")
+    # def events():
+    #     return render_template("event.html")
+
     @app.errorhandler(Exception)
     def api_errors(e):
         # If it's a normal Flask/Werkzeug HTTP error (like 404), return it as-is.
@@ -532,6 +536,24 @@ def home():
 @main_blueprint.route("/report")
 def report():
     return render_template("report.html")
+
+
+@main_blueprint.route("/event")
+def event():
+    return render_template("event.html")
+
+@main_blueprint.route("/sign-in")
+def signIn():
+    return render_template("sign-in.html")
+
+
+@main_blueprint.route("/sign-up")
+def signUp():
+    return render_template("sign-up.html")
+
+@main_blueprint.route("/profile")
+def profile():
+    return render_template("profile.html")
 
 if __name__ == "__main__":
     app = create_app()
