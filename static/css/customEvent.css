@@ -1,0 +1,8 @@
+@media (min-width: 1200px) {
+  #addEventModal .modal-dialog.modal-lg{
+    margin-right: 6rem !important;
+    margin-left: auto !important;
+    transform: none;
+
+  }
+}
