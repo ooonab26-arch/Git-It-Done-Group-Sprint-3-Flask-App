@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        padding: 24px;
+        background: #f9fafb;
+        color: #111827;
+      }
+      h1 {
+        margin: 0 0 8px;
+      }
+      .note {
+        margin-bottom: 16px;
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+      .card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 12px 0;
+        background: #ffffff;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .chart-350 {
+        position: relative;
+        height: 350px;
+      }
+      .chart-350 > canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.9rem;
+      }
+      th, td {
+        border: 1px solid #e5e7eb;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background: #f8fafc;
+      }
+      tfoot td {
+        font-weight: 600;
+        background: #f3f4f6;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    {% if note %}
+      <div class="note">{{ note|safe }}</div>
+    {% endif %}
+
+    <div class="card">
+      <b>Total Events:</b> {{ summary.total_events }}<br>
+      <b>Total Attendees:</b> {{ summary.total_attendees }}
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin-top:0">Events by Month</h3>
+        <div class="chart-350">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Events by Type</h3>
+        <div class="chart-350">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Events (first {{ rows|length }})</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Attendance</th>
+            <th>Location</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>{{ r.title }}</td>
+            <td>{{ r.date.isoformat() if r.date else '' }}</td>
+            <td>{{ r.start }}</td>
+            <td>{{ r.end }}</td>
+            <td>{{ r.attendance or 0 }}</td>
+            <td>{{ r.location }}</td>
+            <td>{{ r.type }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      (function() {
+        const monthLabels = {{ months|tojson }};
+        const eventsSeries = {{ attendance|tojson }};
+
+        const pieLabels = {{ js_pie_labels|tojson }};
+        const pieValues = {{ js_pie_values|tojson }};
+
+        const lineCtx = document.getElementById('lineChart');
+        const pieCtx  = document.getElementById('pieChart');
+
+        // Line chart: events per month
+        new Chart(lineCtx, {
+          type: 'line',
+          data: {
+            labels: monthLabels,
+            datasets: [{
+              label: 'Events',
+              data: eventsSeries,
+              borderColor: '#3B82F6',
+              backgroundColor: 'rgba(59,130,246,0.15)',
+              fill: true,
+              tension: 0.2,
+              pointRadius: 3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true } },
+            scales: {
+              y: { beginAtZero: true, ticks: { precision: 0 } }
+            }
+          }
+        });
+
+        // Pie chart: events by type
+        new Chart(pieCtx, {
+          type: 'pie',
+          data: {
+            labels: pieLabels,
+            datasets: [{
+              data: pieValues,
+              backgroundColor: [
+                '#3B82F6', '#10B981', '#F59E0B',
+                '#EF4444', '#6366F1', '#EC4899'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
