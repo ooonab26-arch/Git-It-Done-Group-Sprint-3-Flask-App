@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from models import db, Events
-from flask import Flask, jsonify, request, send_file, send_from_directory, render_template, current_app
+from flask import Flask, jsonify, request, send_file, send_from_directory, render_template, current_app, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from load_data import load_events
 from views import main_blueprint
@@ -11,6 +11,7 @@ import csv
 from datetime import datetime
 import json
 import calendar
+import requests
 
 CSV_PATH = os.environ.get("EVENTS_CSV", os.path.join(
     os.path.dirname(__file__), "SW_Events.csv"))
@@ -490,8 +491,37 @@ def create_app():
         current_app.logger.exception(e)
         return jsonify(error="Internal Server Error"), 500
 
+    @app.route("/google-auth/callback")
+    def google_auth_callback():
+        token = request.args.get("credential") or request.form.get("credential")
+        if not token:
+            return "Missing credential", 400
 
+        # Verify token via Google’s tokeninfo endpoint
+        resp = requests.get("https://oauth2.googleapis.com/tokeninfo", params={"id_token": token})
+        if resp.status_code != 200:
+            return "Invalid Google token", 400
+
+        data = resp.json()
+        email = data.get("email")
+        name = data.get("name", "User")
+
+        # Store or create user in DB
+        from models import User, db
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(name=name, email=email, position="GoogleUser")
+            db.session.add(user)
+            db.session.commit()
+
+        # Set session
+        session["user_id"] = user.id
+        session["user_name"] = user.name
+
+        return redirect(url_for("dashboard"))
+    
     return app
+
 
 # link to different documents
 @main_blueprint.route("/")
