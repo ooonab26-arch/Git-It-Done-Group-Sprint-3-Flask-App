@@ -3,11 +3,21 @@ const ORIGIN = window.location.origin;
 // --- Fetch helper ---
 async function fetchJSON(url, options) {
   let res;
-  try { res = await fetch(url, options); } catch (e) { throw new Error("Network error: " + e.message); }
+  try {
+    res = await fetch(url, options);
+  } catch (e) {
+    throw new Error("Network error: " + e.message);
+  }
   const text = await res.text();
-  let data = null; 
-  try { data = JSON.parse(text); } catch {}
-  if (!res.ok) throw new Error((data && (data.message || data.error)) || text || res.statusText);
+  let data = null;
+  try {
+    data = JSON.parse(text);
+  } catch {}
+  if (!res.ok) {
+    throw new Error(
+      (data && (data.message || data.error)) || text || res.statusText
+    );
+  }
   return data ?? {};
 }
 
@@ -50,19 +60,23 @@ function showYearPickerModal(years) {
     select: modal.querySelector("#yearSelect"),
     okBtn: modal.querySelector("#yearModalOk"),
     cancelBtn: modal.querySelector("#yearModalCancel"),
-    closeBtn: modal.querySelector("#yearModalClose")
+    closeBtn: modal.querySelector("#yearModalClose"),
   };
 }
 
 async function pickYearAndRun(actionFn) {
   let years = [];
-  try { years = await fetchJSON(`${ORIGIN}/api/events/years`); } catch {}
+  try {
+    years = await fetchJSON(`${ORIGIN}/api/events/years`);
+  } catch {}
   if (!years || years.length === 0) {
     console.warn("No years returned from API, defaulting to current year.");
     years = [new Date().getFullYear()];
   }
 
-  const { modal, select, okBtn, cancelBtn, closeBtn } = showYearPickerModal(years);
+  const { modal, select, okBtn, cancelBtn, closeBtn } = showYearPickerModal(
+    years
+  );
 
   const closeModal = () => modal.remove();
 
@@ -85,8 +99,10 @@ async function createReportWithYear(year, btn) {
     const data = await fetchJSON(`${ORIGIN}/api/reports/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
+
+    // Open the HTML report to view
     window.open(data.url, "_blank", "noopener");
   } catch (e) {
     alert("Failed to generate report: " + e.message);
@@ -96,34 +112,24 @@ async function createReportWithYear(year, btn) {
   }
 }
 
+// --- "Download" report as PDF via browser print ---
 async function downloadReportWithYear(year) {
   try {
     const payload = year ? { year } : {};
     const data = await fetchJSON(`${ORIGIN}/api/reports/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
+    // Take the returned report URL and add ?print=1
     const u = new URL(data.url, ORIGIN);
-    u.searchParams.set("download", "1");
-    const res = await fetch(u, { credentials: "same-origin" });
-    if (!res.ok) throw new Error(`Download failed: ${res.status} ${res.statusText}`);
+    u.searchParams.set("print", "1");
 
-    const blob = await res.blob();
-    const fname = u.pathname.split("/").pop() || "report.html";
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = fname;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      URL.revokeObjectURL(a.href);
-      a.remove();
-    }, 0);
+    // Open in new tab; the report page will auto-trigger window.print()
+    window.open(u.toString(), "_blank", "noopener");
   } catch (e) {
-    alert("Failed to download report: " + e.message);
+    alert("Failed to open report for PDF download: " + e.message);
     console.error(e);
   }
 }
@@ -143,16 +149,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("btn-export");
 
   if (createBtn) {
-    createBtn.addEventListener("click", e => {
+    createBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      pickYearAndRun(year => createReportWithYear(year, createBtn));
+      pickYearAndRun((year) => createReportWithYear(year, createBtn));
     });
   }
 
   if (downloadBtn) {
-    downloadBtn.addEventListener("click", e => {
+    downloadBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      pickYearAndRun(year => downloadReportWithYear(year));
+      pickYearAndRun((year) => downloadReportWithYear(year));
     });
   }
 });

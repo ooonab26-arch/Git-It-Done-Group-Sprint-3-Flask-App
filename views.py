@@ -8,8 +8,6 @@ from flask import request, redirect, url_for, current_app, render_template, json
 from report_gen import read_events, summarize
 import os
 
-
-
 main_blueprint = Blueprint('homepage', __name__)
 
 @main_blueprint.route('/')
