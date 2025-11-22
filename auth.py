@@ -8,7 +8,7 @@ auth_blueprint = Blueprint('auth', __name__)
 # ==========================
 # SIGNUP ROUTE
 # ==========================
-@auth_blueprint.route('/signup', methods=['GET', 'POST'])
+@auth_blueprint.route('/api/v1/auth/signup', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
         name = request.form.get('name')          # <-- grab the name
@@ -38,7 +38,7 @@ def signUp():
 # ==========================
 # LOGIN ROUTE
 # ==========================
-@auth_blueprint.route('/signin', methods=['GET', 'POST'])
+@auth_blueprint.route('/api/v1/auth/signin', methods=['GET', 'POST'])
 def signIn():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -57,7 +57,7 @@ def signIn():
 # ==========================
 # LOGOUT ROUTE
 # ==========================
-@auth_blueprint.route('/logout')
+@auth_blueprint.route('/api/v1/auth/logout')
 @login_required
 def logout():
     logout_user()
