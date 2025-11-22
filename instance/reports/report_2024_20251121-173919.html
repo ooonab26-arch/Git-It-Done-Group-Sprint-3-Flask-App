@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Events Report 2024</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+    }
+
+    .note {
+      margin-bottom: 16px;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      background: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-350 {
+      position: relative;
+      height: 350px;
+    }
+
+    .chart-350>canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #e5e7eb;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+    }
+
+    tfoot td {
+      font-weight: 600;
+      background: #f3f4f6;
+    }
+  </style>
+  <style>
+    /* Force landscape printing */
+    @page {
+      size: A4 landscape;
+      margin: 1cm;
+    }
+
+    /* Optional: Adjust layout for print */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: white !important;
+      }
+
+      /* Example: remove buttons or navbars if any */
+      .no-print,
+      nav,
+      .navbar,
+      .btn {
+        display: none !important;
+      }
+
+      /* Force charts to scale nicely */
+      canvas {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <h1>Events Report 2024</h1>
+  
+
+  <div class="card">
+    <b>Total Events:</b> 12<br>
+    <b>Total Attendees:</b> 1051
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin-top:0">Events by Month</h3>
+      <div class="chart-350">
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Events by Type</h3>
+      <div class="chart-350">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Events (first 12)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Attendance</th>
+          <th>Location</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>Foundations of Intercultural Communication &amp; Humility Workshop:</td>
+          <td>2024-07-25</td>
+          <td>09:00:00</td>
+          <td>12:00:00</td>
+          <td>21</td>
+          <td>Chace Forum</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness for COOT Leaders</td>
+          <td>2024-08-23</td>
+          <td>09:00:00</td>
+          <td>10:30:00</td>
+          <td>150</td>
+          <td>Ostrove Auditorium</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Be Well to Do Well for Pre-O</td>
+          <td>2024-08-27</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>65</td>
+          <td>Keyes 105</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Flu Vaccine Clinic 1</td>
+          <td>2024-09-30</td>
+          <td>09:00:00</td>
+          <td>16:00:00</td>
+          <td>480</td>
+          <td>Page Commons</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Student Wellness Space Launch Party</td>
+          <td>2024-10-25</td>
+          <td>09:00:00</td>
+          <td>16:00:00</td>
+          <td>80</td>
+          <td>Garrison-Foster 208</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Flu Vaccine Clinic 2</td>
+          <td>2024-10-29</td>
+          <td>09:00:00</td>
+          <td>16:00:00</td>
+          <td>200</td>
+          <td>Roberts, Smith Room</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-10-29</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>50</td>
+          <td>Roberts, Robins Room</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Arboretum Walks</td>
+          <td>2024-11-06</td>
+          <td>15:30:00</td>
+          <td>16:30:00</td>
+          <td>5</td>
+          <td>Perkins Arboretum</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Travel Physicals</td>
+          <td>2024-11-14</td>
+          <td>15:00:00</td>
+          <td>20:30:00</td>
+          <td>0</td>
+          <td>Diamond</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Harm Reduction Fair</td>
+          <td>2024-11-15</td>
+          <td>12:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>CPR Training Course</td>
+          <td>2024-11-16</td>
+          <td>16:00:00</td>
+          <td>18:00:00</td>
+          <td>0</td>
+          <td>Diamond 145</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-12-05</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Workshop</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function () {
+      const monthLabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const eventsSeries = [0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 4, 1];
+
+    const pieLabels = ["Workshop", "Wellness", "Presentation", "Discussion"];
+    const pieValues = [3, 7, 1, 1];
+
+    const lineCtx = document.getElementById('lineChart');
+    const pieCtx = document.getElementById('pieChart');
+
+    // Line chart: events per month
+    new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: monthLabels,
+        datasets: [{
+          label: 'Events',
+          data: eventsSeries,
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59,130,246,0.15)',
+          fill: true,
+          tension: 0.2,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: true } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } }
+        }
+      }
+    });
+
+    // Pie chart: events by type
+    new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: pieLabels,
+        datasets: [{
+          data: pieValues,
+          backgroundColor: [
+            '#3B82F6', '#10B981', '#F59E0B',
+            '#EF4444', '#6366F1', '#EC4899'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+      }) ();
+  </script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const shouldPrint = params.get('print') === '1';
+
+      if (shouldPrint) {
+        window.addEventListener('load', function () {
+          window.print(); // user can then choose "Save as PDF"
+        });
+      }
+    })();
+  </script>
+
+</body>
+
+</html>
