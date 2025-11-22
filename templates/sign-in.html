@@ -2,15 +2,6 @@
 =========================================================
 * Argon Dashboard 3 - v2.1.0
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -18,12 +9,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../static/images/apple-icon.png">
-  <link rel="icon" type="image/png" href="../static/images/favicon.png">
-  <title>
-    Colby Wellness Center
-  </title>
-  <!--     Fonts and icons     -->
+  <link rel="apple-touch-icon" sizes="76x76"
+        href="{{ url_for('static', filename='images/apple-icon.png') }}">
+  <link rel="icon" type="image/png"
+        href="{{ url_for('static', filename='images/favicon.png') }}">
+  <title>Colby Wellness Center | Sign In</title>
+
+  <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
@@ -31,7 +23,9 @@
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
-  <link id="pagestyle" href="../static/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
+  <link id="pagestyle"
+        href="{{ url_for('static', filename='css/argon-dashboard.css') }}"
+        rel="stylesheet" />
 </head>
 
 <body class="">
@@ -41,10 +35,13 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
           <div class="container-fluid">
-            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="{{ url_for('homepage.dashboard') }}">
-              Colby Wellness 
+            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
+               href="{{ url_for('homepage.dashboard') }}">
+              Colby Wellness
             </a>
-            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false"
+                    aria-label="Toggle navigation">
               <span class="navbar-toggler-icon mt-2">
                 <span class="navbar-toggler-bar bar1"></span>
                 <span class="navbar-toggler-bar bar2"></span>
@@ -54,7 +51,8 @@
             <div class="collapse navbar-collapse" id="navigation">
               <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" href="{{ url_for('homepage.dashboard') }}">
+                  <a class="nav-link d-flex align-items-center me-2"
+                     href="{{ url_for('homepage.dashboard') }}">
                     <i class="fa fa-chart-pie opacity-6 text-dark me-1"></i>
                     Dashboard
                   </a>
@@ -72,13 +70,14 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link me-2" href="{{ url_for('auth.signIn') }}">
+                  <a class="nav-link me-2 active" aria-current="page"
+                     href="{{ url_for('auth.signIn') }}">
                     <i class="fas fa-key opacity-6 text-dark me-1"></i>
                     Sign In
                   </a>
                 </li>
               </ul>
-              
+
             </div>
           </div>
         </nav>
@@ -86,7 +85,8 @@
       </div>
     </div>
   </div>
-  <main class="main-content  mt-0">
+
+  <main class="main-content mt-0">
     <section>
       <div class="page-header min-vh-100">
         <div class="container">
@@ -97,43 +97,77 @@
                   <h4 class="font-weight-bolder">Sign In</h4>
                   <p class="mb-0">Enter your email and password to sign in</p>
                 </div>
-                <div class="card-body">
-                  <form role="form">
+
+                <div class="card-body pt-3">
+                  <!-- Google sign-in -->
+                  <div class="text-center mb-3">
+                    <a href="{{ url_for('auth.google_login') }}"
+                       class="btn btn-outline-dark w-100">
+                      <i class="fab fa-google me-2"></i>
+                      Sign in with Google
+                    </a>
+                  </div>
+
+                  <div class="text-center text-muted text-xs mb-3">
+                    or sign in with credentials
+                  </div>
+
+                  <!-- Email/password form -->
+                  <form role="form" method="POST" action="{{ url_for('auth.signIn') }}">
                     <div class="mb-3">
-                      <input type="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email">
+                      <input type="email"
+                             class="form-control form-control-lg"
+                             placeholder="Email"
+                             aria-label="Email"
+                             name="email"
+                             required>
                     </div>
                     <div class="mb-3">
-                      <input type="email" class="form-control form-control-lg" placeholder="Password" aria-label="Password">
+                      <input type="password"
+                             class="form-control form-control-lg"
+                             placeholder="Password"
+                             aria-label="Password"
+                             name="password"
+                             required>
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" id="rememberMe">
                       <label class="form-check-label" for="rememberMe">Remember me</label>
                     </div>
                     <div class="text-center">
-                      <button type="button" class="btn btn-lg btn-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
+                      <button type="submit"
+                              class="btn btn-lg btn-primary w-100 mt-4 mb-0">
+                        Sign in
+                      </button>
                     </div>
                   </form>
                 </div>
+
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                   <p class="mb-4 text-sm mx-auto">
                     Don't have an account?
-                    <a href="{{ url_for('auth.signUp') }}" class="text-primary text-gradient font-weight-bold">Sign up</a>
+                    <a href="{{ url_for('auth.signUp') }}"
+                       class="text-primary text-gradient font-weight-bold">
+                      Sign up
+                    </a>
                   </p>
                 </div>
+
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
     </section>
   </main>
-  <!--   Core JS Files   -->
+
+  <!-- Core JS Files -->
   <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}">
-  
+  <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}"></script>
+
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
