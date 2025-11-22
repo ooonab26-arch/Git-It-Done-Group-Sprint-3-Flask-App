@@ -130,7 +130,7 @@ def getEventsList():
     
     return event_list
 
-@main_blueprint.route('/events')
+@main_blueprint.route('/api/v1/events')
 def events_page():
     curEventList = getEventsList()
 
@@ -214,7 +214,7 @@ def report_page():
     )
 
     
-@main_blueprint.route('/add-event', methods=['POST'])
+@main_blueprint.route('/api/v1/add-event', methods=['POST'])
 def add_event():
     title = request.form.get('title')
     date_str = request.form.get('date')
@@ -253,7 +253,7 @@ def add_event():
     return redirect(url_for('homepage.events_page'))
 
 
-@main_blueprint.post('/api/reports/generate')
+@main_blueprint.post('/api/v1/reports/generate')
 def generate_report():
     payload = request.get_json(silent=True) or {}
     y = payload.get("year")
@@ -287,16 +287,15 @@ def generate_report():
     js_pie_labels = list(type_counts.keys())
     js_pie_values = list(type_counts.values())
 
-    # 🔴 CHANGE THIS LINE:
-    # html = render_template("report.html", ...)
+
     html = render_template(
-        "standalone_report.html",   # <- new template name
+        "standalone_report.html",   
         title=title,
         note=note,
         summary=summary,
         rows=rows,
         months=months,
-        attendance=attendance,      # here “attendance” = events/month series
+        attendance=attendance,   
         js_pie_labels=js_pie_labels,
         js_pie_values=js_pie_values,
     )
@@ -317,7 +316,7 @@ def generate_report():
         "format": "html"
     })
 
-@main_blueprint.route('/reports/files/<filename>')
+@main_blueprint.route('/api/v1/reports/files/<filename>')
 def serve_report(filename):
     out_dir = os.path.join(current_app.instance_path, "reports")
     return send_from_directory(out_dir, filename)
