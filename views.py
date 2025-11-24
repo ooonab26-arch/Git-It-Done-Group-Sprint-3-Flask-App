@@ -130,6 +130,18 @@ def getEventsList():
     
     return event_list
 
+@main_blueprint.route('/api/v1/events/<int:event_id>', methods=['DELETE'])
+def delete_event(event_id):
+    event = Events.query.get(event_id)
+    
+    if not event:
+        return jsonify({"error": "event not found"}) ,404
+    
+    db.session.delete(event)
+    db.session.commit()
+    
+    return jsonify({"message": "success, deleted"}), 200
+
 @main_blueprint.route('/api/v1/events')
 def events_page():
     curEventList = getEventsList()
