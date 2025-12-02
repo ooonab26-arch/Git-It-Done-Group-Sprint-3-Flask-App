@@ -4,6 +4,7 @@ from models import db, Events, User
 from load_data import load_events
 from views import main_blueprint
 from auth import auth_blueprint, init_oauth
+from report_gen import reports_bp
 import os
 
 login_manager = LoginManager()
@@ -32,6 +33,8 @@ def create_app():
     # Register blueprints
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint)
+    app.register_blueprint(reports_bp, url_prefix="/api/reports")
+    
 
     with app.app_context():
         db.create_all()

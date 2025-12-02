@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, render_template, current_app, sen
 from models import db, Events, Event_Type
 from sqlalchemy import extract
 from datetime import datetime
+from collections import Counter
 import os
 
 reports_bp = Blueprint("reports", __name__)
@@ -9,7 +10,7 @@ reports_bp = Blueprint("reports", __name__)
 # -------------------------
 # Return available years
 # -------------------------
-@reports_bp.get("/api/events/years")
+@reports_bp.get("/events/years")
 def api_get_years():
     years = (
         db.session.query(extract("year", Events.date).label("year"))
@@ -63,7 +64,7 @@ def summarize(rows):
 # -------------------------
 # Generate report
 # -------------------------
-@reports_bp.post("/api/reports/generate")
+@reports_bp.post("/generate")
 def api_generate_report():
     data = request.get_json(silent=True) or {}
     year = data.get("year")
@@ -77,13 +78,24 @@ def api_generate_report():
         rows = read_events(None)
 
     summary = summarize(rows)
+    
+    months = [summary['by_month'][m]['events'] for m in range(1, 13)]
+    attendance = [summary['by_month'][m]['attendance'] for m in range(1, 13)]
+
+    type_counter = Counter(r["type"] for r in rows)
+    js_pie_labels = list(type_counter.keys())
+    js_pie_values = list(type_counter.values())
 
     html = render_template(
-        "reports/standalone_report.html",
+        "standalone_report.html",
         title=f"Events Report {year}" if year and not fallback else "Events Report (All Years)",
         summary=summary,
         rows=rows,
         year=year,
+        months=months,
+        attendance=attendance,
+        js_pie_labels=js_pie_labels,
+        js_pie_values=js_pie_values,
     )
 
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -96,14 +108,14 @@ def api_generate_report():
         fp.write(html)
 
     return jsonify({
-        "url": f"/reports/files/{fname}",
+        "url": f"/api/reports/files/{fname}",
         "report_id": fname
     })
 
 # -------------------------
 # Serve saved report files
 # -------------------------
-@reports_bp.route("/reports/files/<filename>")
+@reports_bp.route("/files/<filename>")
 def serve_report(filename):
     out_dir = os.path.join(current_app.instance_path, "reports")
     return send_from_directory(out_dir, filename)
