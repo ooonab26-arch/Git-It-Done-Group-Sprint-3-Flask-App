@@ -17,6 +17,54 @@
 
 
 
+.event-card-popup{
+
+  position: fixed;
+  z-index: 9999;
+  top: 20%;
+  right: -40px;
+  background-color: #7c5cff;
+  background-image: linear-gradient(200deg, #5e72e4 10%, #825ee4 100%);
+  padding: 15px;
+  border-radius: 10%;
+  max-width: 90%;
+  max-height: 90%;
+  width: 300px;
+  height: 350px;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  text-align: center;
+  color:white;
+  transition: right 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+  justify-content: center;
+
+}
+
+.event-card-popup img{
+  max-width: 40%;
+  height: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: block;
+
+}
+
+.event-card-popup.show{
+  right: 20px;
+  opacity: 1;
+}
+
+.event-card-popup strong{
+  font-size: 18px;
+  text-align: center;
+}
+
+
+
 
 @media (min-width: 1200px) {
   #addEventModal .modal-dialog.modal-lg{
