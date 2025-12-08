@@ -123,3 +123,62 @@
 
   }
 }
+
+body.bg-gray-100 {
+  background-color: #b3bed5;
+}
+
+
+.min-height-300.bg-dark {
+  background-color: #012169;
+}
+
+.sidenav.bg-white {
+  background-color: #ffffff ;
+  border-radius: 1rem;
+}
+
+.navbar-main {
+  background-color: #012169;
+}
+
+.text-dark {
+  color: #003b71 ;
+}
+
+.bg-gradient-info {
+  background-image: linear-gradient(135deg, #71b9ed, #0a3965);
+}
+
+.bg-gradient-success {
+  background-image: linear-gradient(135deg, #4caf50, #2e7d32);
+}
+
+.bg-gradient-danger {
+  background-image: linear-gradient(135deg, #ffa1a1, #ff0000);
+}
+
+.bg-gradient-primary{
+  background-image: linear-gradient(135deg, #4a4f5a, #012169);
+}
+
+.custom-top-card {
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.custom-top-card {
+  min-height: 90px;
+  width: 90%;         
+  margin-left: auto;
+  margin-right: auto;  
+}
+
+.custom-top-card .card-body {
+  padding-top: 0.4rem;
+  padding-bottom: 0.1rem;
+}
+
+.btn-primary{
+  background-color: #5a86d8;
+}
