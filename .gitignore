@@ -1,2 +1,3 @@
 instance/events.db
+credentials/service_account.json
 .env
