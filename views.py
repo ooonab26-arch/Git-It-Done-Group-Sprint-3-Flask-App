@@ -27,7 +27,7 @@ def dashboard():
         func.count(Events.id)
     ).scalar()
 
-    months = [datetime(1900,r.month,1).strftime('%B') for r in results]
+    months = [datetime(1900,int(r.month),1).strftime('%B') for r in results]
     attendance = [r.total_attendance or 0 for r in results]
     total_events = [r.event_count for r in results]
    
