@@ -19,6 +19,14 @@ def dashboard():
     ).group_by('month').order_by('month').all()
     )
 
+    attendance_total = db.session.query(
+        func.sum(Events.attendance)
+    ).scalar()
+
+    event_total = db.session.query(
+        func.count(Events.id)
+    ).scalar()
+
     months = [datetime(1900,r.month,1).strftime('%B') for r in results]
     attendance = [r.total_attendance or 0 for r in results]
     total_events = [r.event_count for r in results]
@@ -102,7 +110,7 @@ def dashboard():
 
     print(suggestions)
 
-    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions)
+    return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions, attendance_total = attendance_total, event_total = event_total)
 
 def getEventsList():
     # Query all events from most recent to oldest

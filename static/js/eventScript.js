@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
                      <div><strong>${eventData.title}</strong></div>
 
                     <div class="event-card-text">
-                            <div class="event-title"><strong>${eventData.title}</strong></div>
                             <div><span class = "popup-text">Date:</span> ${eventData.date}</div>
                             <div><span class = "popup-text">Location:</span> ${eventData.location}</div>
                             <div><span class = "popup-text">Attendance:</span> ${eventData.attendance}</div>
