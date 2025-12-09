@@ -17,7 +17,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__, static_folder='static', template_folder='templates')
     app.config['SECRET_KEY'] = 'dev'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///events.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID')
@@ -62,7 +62,3 @@ def create_app():
     os.makedirs(os.path.join(app.instance_path, "reports"), exist_ok=True)
 
     return app
-
-# if __name__ == "__main__":
-#     app = create_app()
-#     app.run(debug=True)
