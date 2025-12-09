@@ -1,9 +1,14 @@
+/* Global background for this layout */
+body,
+.bg-gray-100,
+body.bg-gray-100 {
+  background-color: #b3bed5 !important;
+}
 
 .sidenav {
 
   overflow-y: visible !important;
 }
-
 
 .ps{
 
@@ -14,8 +19,6 @@
   height: auto !important;
   max-height: none !important;
 }
-
-
 
 .event-card-popup{
 
@@ -124,23 +127,15 @@
   }
 }
 
-body.bg-gray-100 {
-  background-color: #b3bed5;
-}
-
-
-.min-height-300.bg-dark {
-  background-color: #012169;
-}
 
 .sidenav.bg-white {
   background-color: #ffffff ;
   border-radius: 1rem;
 }
 
-.navbar-main {
-  background-color: #012169;
-}
+/* .navbar-main {
+  background-color: #b2c5f2;
+} */
 
 .text-dark {
   color: #003b71 ;
