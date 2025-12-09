@@ -1,3 +1,4 @@
 instance/events.db
-credentials/service_account.json
 .env
+__pycache__/
+*.pyc
