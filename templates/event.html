@@ -34,14 +34,14 @@
   
   <!-- CSS Files --> <!-- <link id="pagestyle" href="{{ url_for('static', filename='css/argon-dashboard.css') }}?v=2.1.0" rel="stylesheet" /> --> 
   <link id="pagestyle" href="{{ url_for('static', filename='css/argon-dashboard.css') }}" rel="stylesheet" />
-  <link id="pagestyle" href="{{ url_for('static', filename='css/customEvent.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/customEvent.css') }}" rel="stylesheet" />
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-  <div class="min-height-300 bg-dark position-absolute w-100"></div>
+  <div class="min-height-300 bg-dark position-absolute w-100" style= "color: blanchedalmond;"></div>
   <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none" aria-hidden="true" id="iconSidenav"></i>
@@ -146,7 +146,7 @@
       <div class="container-fluid py-1 px-3">
 
         <div class="d-flex align-items-center"> 
-            <h6 class="font-weight-bolder text-white mb-0"> Events</h6>
+            <h6 class="font-weight-bolder text-white mb-0"> Events </h6>
         </div>
           
         

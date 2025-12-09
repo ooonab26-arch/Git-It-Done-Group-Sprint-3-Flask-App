@@ -1,4 +1,9 @@
 /* ---- TOP CARDS ---- */
+body,
+.bg-gray-100,
+body.bg-gray-100 {
+  background-color: #b3bed5 !important;
+}
 
 .custom-top-card {
   padding: 18px 0;
@@ -131,24 +136,14 @@
   max-height: none;
 }
 
-
-body.bg-gray-100 {
-  background-color: #b3bed5;
-}
-
-
-.min-height-300.bg-dark {
-  background-color: #012169;
-}
-
 .sidenav.bg-white {
   background-color: #ffffff ;
   border-radius: 1rem;
 }
 
-.navbar-main {
+/* .navbar-main {
   background-color: #012169;
-}
+} */
 
 .text-dark {
   color: #003b71 ;
