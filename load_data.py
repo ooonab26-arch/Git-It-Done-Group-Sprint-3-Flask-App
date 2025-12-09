@@ -1,8 +1,46 @@
 import csv
 import os
 import re
+from googleapiclient.discovery import build
+from flask import current_app
+from google.oauth2.service_account import Credentials
 from datetime import datetime
 from models import db, Events, Advertisement, Partners, Organizer, Event_Type, event_organizers, event_partners
+
+def get_sheet_rows():
+    """Return rows from Google Sheets as a list of dicts."""
+
+    creds_dict = current_app.config["GOOGLE_SHEETS_CREDENTIALS"]
+    SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+
+    creds = Credentials.from_service_account_info(
+        creds_dict, scopes=SCOPES
+    )
+
+    service = build("sheets", "v4", credentials=creds)
+    sheet = service.spreadsheets()
+
+    sheet_id = current_app.config["GOOGLE_SHEETS_SHEET_ID"]
+    sheet_range = current_app.config["GOOGLE_SHEETS_RANGE"]
+
+    # Read the sheet
+    result = sheet.values().get(spreadsheetId=sheet_id, range=sheet_range).execute()
+    rows = result.get("values", [])
+
+    if not rows:
+        print("No data found in Google Sheet.")
+        return
+
+    # First row is headers
+    headers = rows[0]
+    data_rows = rows[1:]
+
+    # Convert to list of dict rows
+    dict_rows = []
+    for r in data_rows:
+        d = {headers[i]: r[i] if i < len(r) else "" for i in range(len(headers))}
+        dict_rows.append(d)
+    return dict_rows
 
 def return_id(model, name):
     """Get or create a record by name and return its ID."""

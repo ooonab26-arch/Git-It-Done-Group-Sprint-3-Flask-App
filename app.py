@@ -6,6 +6,7 @@ from views import main_blueprint
 from auth import auth_blueprint, init_oauth
 from report_gen import reports_bp
 import os
+import json
 
 login_manager = LoginManager()
 
@@ -17,6 +18,11 @@ def create_app():
 
     app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID')
     app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET')
+
+    # Google Sheets config
+    app.config["GOOGLE_SHEETS_CREDENTIALS"] = json.loads(os.environ.get("GOOGLE_SHEETS_CREDENTIALS_JSON"))
+    app.config["GOOGLE_SHEETS_SHEET_ID"] = os.environ.get("GOOGLE_SHEETS_SHEET_ID")
+    app.config["GOOGLE_SHEETS_RANGE"] = os.environ.get("GOOGLE_SHEETS_RANGE")
     
     db.init_app(app)
 
