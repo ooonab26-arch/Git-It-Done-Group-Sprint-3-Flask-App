@@ -22,6 +22,8 @@ def create_app():
 
     app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID')
     app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET')
+    print("Using database:", app.config['SQLALCHEMY_DATABASE_URI'])
+
 
     # Google Sheets config
     creds_str = os.environ.get("GOOGLE_SHEETS_CREDENTIALS_JSON")
