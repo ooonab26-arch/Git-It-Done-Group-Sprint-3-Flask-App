@@ -106,8 +106,8 @@
 
 
 #eventPerformanceChart {
-  width: 100% !important;
-  height: 260px !important;
+  width: 100% ;
+  height: 260px;
 }
 
 
@@ -123,41 +123,37 @@
 
 .ps{
 
-  overflow: visible !important;
+  overflow: visible ;
 }
 
 .sidenav .navbar-collapse{
-  height: auto !important;
-  max-height: none !important;
+  height: auto ;
+  max-height: none;
 }
 
 
-
-/* Global page background */
 body.bg-gray-100 {
-  background-color: #b3bed5 !important;
+  background-color: #b3bed5;
 }
 
 
 .min-height-300.bg-dark {
-  background-color: #012169 !important;
+  background-color: #012169;
 }
 
-/* Sidenav background */
 .sidenav.bg-white {
-  background-color: #ffffff !important;
+  background-color: #ffffff ;
   border-radius: 1rem;
 }
 
 .navbar-main {
-  background-color: #012169 !important;
+  background-color: #012169;
 }
 
 .text-dark {
-  color: #003b71 !important;
+  color: #003b71 ;
 }
 
-/* Gradient accent colors for progress bars and icons */
 .bg-gradient-info {
   background-image: linear-gradient(135deg, #71b9ed, #0a3965);
 }
