@@ -334,7 +334,7 @@
                   <tr id="event-{{ event.id }}" class="event-info"
                       data-event='{{ {
                             "title": event.title,
-                            "poster": url_for("static", filename=event.poster_path) if event.poster_path else url_for("static", filename="images/default_poster.jpeg")
+                            "poster": url_for("static", filename=event.poster_path) if event.poster_path else url_for("static", filename="images/default_poster.jpeg"),
                             "date": event.date.strftime("%B %d, %Y"),
                             "location": event.location,
                             "attendance": event.attendance,
