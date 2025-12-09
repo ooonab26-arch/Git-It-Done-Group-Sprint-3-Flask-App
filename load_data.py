@@ -18,29 +18,33 @@ def get_sheet_rows():
     )
 
     service = build("sheets", "v4", credentials=creds)
-    sheet = service.spreadsheets()
+    sheet_api = service.spreadsheets()
 
     sheet_id = current_app.config["GOOGLE_SHEETS_SHEET_ID"]
-    sheet_range = current_app.config["GOOGLE_SHEETS_RANGE"]
+    tab = current_app.config["GOOGLE_SHEETS_TABS"]
+    sheet_range = [f"{name}" for name in tab.split(",")]
+    # sheet_range = current_app.config["GOOGLE_SHEETS_RANGE"]
 
+    all_sheet_rows = []
     # Read the sheet
-    result = sheet.values().get(spreadsheetId=sheet_id, range=sheet_range).execute()
-    rows = result.get("values", [])
+    for sheet in sheet_range:
+        result = sheet_api.values().get(spreadsheetId=sheet_id, range=sheet).execute()
+        rows = result.get("values", [])
 
-    if not rows:
-        print("No data found in Google Sheet.")
-        return
+        if not rows:
+            print(f"No data found in {sheet_range}")
+            continue
 
-    # First row is headers
-    headers = rows[0]
-    data_rows = rows[1:]
+        # First row is headers
+        headers = rows[0]
+        data_rows = rows[1:]
 
-    # Convert to list of dict rows
-    dict_rows = []
-    for r in data_rows:
-        d = {headers[i]: r[i] if i < len(r) else "" for i in range(len(headers))}
-        dict_rows.append(d)
-    return dict_rows
+
+        for r in data_rows:
+            d = {headers[i]: r[i] if i < len(r) else "" for i in range(len(headers))}
+            all_sheet_rows.append(d)
+
+    return all_sheet_rows
 
 def return_id(model, name):
     """Get or create a record by name and return its ID."""
@@ -121,7 +125,9 @@ def load_events():
         # Parse date safely
         try:
             date = parse_flexible_date(row['Date'])
-            if not date:
+            if not date and clean_cell(row.get('Date')).lower() == "recurring":
+                date = None
+            elif not date:
                 print(f"Skipping row due to invalid date: {row.get('Date')}")
                 continue
         except ValueError:

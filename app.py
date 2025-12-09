@@ -9,6 +9,8 @@ import os
 import json
 from dotenv import load_dotenv
 load_dotenv()
+print("Loaded TABS:", os.getenv("GOOGLE_SHEETS_TABS"))
+
 
 login_manager = LoginManager()
 
@@ -28,7 +30,7 @@ def create_app():
     else:
         app.config["GOOGLE_SHEETS_CREDENTIALS"] = None
     app.config["GOOGLE_SHEETS_SHEET_ID"] = os.environ.get("GOOGLE_SHEETS_SHEET_ID")
-    app.config["GOOGLE_SHEETS_RANGE"] = os.environ.get("GOOGLE_SHEETS_RANGE")
+    app.config["GOOGLE_SHEETS_TABS"] = os.environ.get("GOOGLE_SHEETS_TABS")
     
     db.init_app(app)
 
