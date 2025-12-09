@@ -335,6 +335,11 @@
                       data-event='{{ {
                             "title": event.title,
                             "poster": url_for("static", filename=event.poster_path) if event.poster_path else url_for("static", filename="images/default_poster.jpeg")
+                            "date": event.date.strftime("%B %d, %Y"),
+                            "location": event.location,
+                            "attendance": event.attendance,
+                            "lead_organizer": event.lead_organizer,
+                            "partners": event.partners
                         } | tojson }}'>
                     <td>
                       <div class="d-flex px-2 py-1">

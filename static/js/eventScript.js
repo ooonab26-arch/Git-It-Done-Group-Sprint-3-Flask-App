@@ -31,6 +31,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     `<img src="${eventData.poster}" alt="${eventData.title}">
                      <div><strong>${eventData.title}</strong></div>
 
+                    <div class="event-card-text">
+                            <div class="event-title"><strong>${eventData.title}</strong></div>
+                            <div><span class = "popup-text">Date:</span> ${eventData.date}</div>
+                            <div><span class = "popup-text">Location:</span> ${eventData.location}</div>
+                            <div><span class = "popup-text">Attendance:</span> ${eventData.attendance}</div>
+                            <div><span class = "popup-text">Lead organizer:</span> ${eventData.lead_organizer}</div>
+                            <div><span class = "popup-text">Collaborators:</span> ${eventData.partners}</div>
+                    </div>
+
                     <div class="social-share-container">
                         <a class="linkedin" target="_blank">
                          <i class="fa fa-linkedin-square"></i> 
