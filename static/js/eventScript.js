@@ -94,4 +94,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentVisible = false; 
             } 
         }); 
-    });
+
+        // --- Filter events by category ---
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const selectedCategory = card.dataset.category;
+
+                // Update table title
+                const tableTitle = document.getElementById('events-table-header');
+                tableTitle.textContent = selectedCategory ? `${selectedCategory} Events` : "All Events";
+
+                // Filter rows
+                document.querySelectorAll('tbody tr.event-info').forEach(row => {
+                    const rowData = JSON.parse(row.dataset.event);
+                    if (rowData.type === selectedCategory || selectedCategory === "") {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+
+});
