@@ -359,3 +359,34 @@ def api_get_years():
     )
     year_list = [int(row.year) for row in years]
     return jsonify(year_list)
+
+@main_blueprint.get('/api/v1/attendance')
+def api_attendance_by_year():
+    # Optional year filter
+    year = request.args.get("year", type=int)
+
+    query = db.session.query(
+        extract('month', Events.date).label('month'),
+        func.sum(Events.attendance).label('total_attendance'),
+        func.count(Events.id).label('event_count')
+    )
+
+    if year:
+        query = query.filter(extract('year', Events.date) == year)
+
+    results = query.group_by('month').order_by('month').all()
+
+    # Ensure all 12 months are present
+    all_months = list(month_name)[1:]
+    month_to_attendance = {datetime(1900,int(r.month),1).strftime('%B'): r.total_attendance or 0 for r in results}
+    month_to_count = {datetime(1900,int(r.month),1).strftime('%B'): r.event_count or 0 for r in results}
+
+    attendance_twelve_months = [month_to_attendance.get(m, 0) for m in all_months]
+    count_twelve_months = [month_to_count.get(m, 0) for m in all_months]
+
+    return jsonify({
+        "months": all_months,
+        "attendance": attendance_twelve_months,
+        "events": count_twelve_months
+    })
+
