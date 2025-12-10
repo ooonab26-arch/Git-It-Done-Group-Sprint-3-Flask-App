@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Events, Event_Type, Organizer
-from flask import Flask, Blueprint, render_template
+from models import ProcessedFile, db, Events, Event_Type, Organizer
+from flask import Flask, Blueprint, app, render_template
 from sqlalchemy import extract, func
 from datetime import datetime
 from calendar import month_name
@@ -9,7 +9,8 @@ from report_gen import read_events, summarize
 import os
 
 main_blueprint = Blueprint('homepage', __name__)
-
+    
+        
 @main_blueprint.route('/')
 def dashboard():
     results = (db.session.query(
@@ -108,7 +109,7 @@ def dashboard():
         for e in top_events
     ]
 
-    print(suggestions)
+    # print(suggestions)
 
     return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions, attendance_total = attendance_total, event_total = event_total)
 
@@ -157,23 +158,14 @@ def events_page():
     years = sorted({ event["date"].year for event in curEventList if event.get("date") is not None })
     specific_year = request.args.get("year", type=int)
 
+    organizers = Organizer.query.all()
+    event_types = Event_Type.query.all()
+    
     if specific_year:
         curEventList = [event for event in curEventList if event.get("date") is not None and event["date"].year == specific_year]
     
-    # Get event category counts
-    category_results = (
-        db.session.query(
-            Event_Type.name.label("category"),
-            func.count(Events.id).label("count")
-        )
-        .join(Events, Events.type_id == Event_Type.id)
-        .group_by(Event_Type.name)
-        .all()
-    )
-
-    categories = [{"name": r.category, "count": r.count} for r in category_results]
-        
-    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year)
+    
+    return render_template('event.html', events=curEventList,years=years,specific_year=specific_year, organizers=organizers, event_types=event_types)
 
 @main_blueprint.route('/profile')
 def profile():
@@ -263,6 +255,11 @@ def add_event():
     type_id = request.form.get('type_id')
     partner_ids = request.form.get('partner_ids')
 
+    poster_file = request.files.get('poster')
+    
+   
+    
+
     # Convert date
     date_obj = datetime.strptime(date_str, "%Y-%m-%d")
 
@@ -275,9 +272,24 @@ def add_event():
         lead_organizer=int(lead_organizer),
         type_id=int(type_id)
     )
-
+    
     db.session.add(new_event)
     db.session.commit()
+
+    if poster_file and poster_file.filename != "":
+        filename = poster_file.filename
+        upload_dir = os.path.join(current_app.root_path, "static", "images", "posters")
+        os.makedirs(upload_dir, exist_ok=True)
+        poster_file.save(os.path.join(upload_dir, filename))
+        
+        processed_file = ProcessedFile(
+            filename=filename,
+            event=new_event
+        )
+        
+        
+        db.session.add(processed_file)
+        db.session.commit()
 
     # # Add partners many-to-many
     # if partner_ids:
