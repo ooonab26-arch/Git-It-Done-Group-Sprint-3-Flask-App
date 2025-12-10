@@ -17,17 +17,16 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__, static_folder='static', template_folder='templates')
     app.config['SECRET_KEY'] = 'dev'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-    if app.config['SQLALCHEMY_DATABASE_URI'] and app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgres://'):
-        app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace('postgres://', 'postgresql://', 1)
+    db_url = os.environ.get('DATABASE_URL')
 
+    if db_url and db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
 
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    if not db_url:
+        print("\n⚠ WARNING: DATABASE_URL not found — using SQLite locally\n")
+        db_url = "sqlite:///events.db"
 
-    app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID')
-    app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET')
-    print("Using database:", app.config['SQLALCHEMY_DATABASE_URI'])
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 
     # Google Sheets config

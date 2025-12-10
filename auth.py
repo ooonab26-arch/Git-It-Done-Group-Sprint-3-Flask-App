@@ -23,8 +23,8 @@ def init_oauth(app):
 
     oauth.register(
         name="google",
-        client_id=app.config["GOOGLE_CLIENT_ID"],
-        client_secret=app.config["GOOGLE_CLIENT_SECRET"],
+        client_id=app.config.get("GOOGLE_CLIENT_ID"),
+        client_secret=app.config.get("GOOGLE_CLIENT_SECRET"),
 
         # This URL gives Authlib *all* of Google's OpenID configuration,
         # including jwks_uri used to verify id_tokens.
