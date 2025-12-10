@@ -84,6 +84,9 @@ class ProcessedFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(400), unique=True, nullable=False)
     processed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    event = db.relationship('Events', backref='processed_files', lazy=True)
 
 event_organizers = db.Table(
     'event_organizers',
