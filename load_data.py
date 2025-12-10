@@ -7,44 +7,69 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime
 from models import db, Events, Advertisement, Partners, Organizer, Event_Type, event_organizers, event_partners
 
+
 def get_sheet_rows():
-    """Return rows from Google Sheets as a list of dicts."""
+    """Load from Google Sheets if configured. Otherwise fallback to CSV."""
 
-    creds_dict = current_app.config["GOOGLE_SHEETS_CREDENTIALS"]
+    creds_dict = current_app.config.get("GOOGLE_SHEETS_CREDENTIALS")
+    sheet_id = current_app.config.get("GOOGLE_SHEETS_SHEET_ID")
+    tabs = current_app.config.get("GOOGLE_SHEETS_TABS")
+
+    # If ANY required Google value is missing → fallback
+    if not creds_dict or not sheet_id or not tabs:
+        print("No Google Sheets configuration found — loading from CSV instead.")
+        return load_from_csv()
+
+    print("Google Sheets detected — loading remotely")
+
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-
-    creds = Credentials.from_service_account_info(
-        creds_dict, scopes=SCOPES
-    )
+    creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 
     service = build("sheets", "v4", credentials=creds)
     sheet_api = service.spreadsheets()
 
-    sheet_id = current_app.config["GOOGLE_SHEETS_SHEET_ID"]
-    tab = current_app.config["GOOGLE_SHEETS_TABS"]
-    sheet_range = [f"{name}" for name in tab.split(",")]
-    # sheet_range = current_app.config["GOOGLE_SHEETS_RANGE"]
+    tab_list = [t.strip() for t in tabs.split(",")]
+    all_rows = []
 
-    all_sheet_rows = []
-    # Read the sheet
-    for sheet in sheet_range:
-        result = sheet_api.values().get(spreadsheetId=sheet_id, range=sheet).execute()
+    for sheet_name in tab_list:
+        result = sheet_api.values().get(
+            spreadsheetId=sheet_id,
+            range=sheet_name
+        ).execute()
+
         rows = result.get("values", [])
-
         if not rows:
-            print(f"No data found in {sheet_range}")
+            print(f"⚠ No data in sheet: {sheet_name}")
             continue
 
-        # First row is headers
         headers = rows[0]
-        data_rows = rows[1:]
+        for r in rows[1:]:
+            row_dict = {headers[i]: r[i] if i < len(r) else "" for i in range(len(headers))}
+            all_rows.append(row_dict)
+
+    return all_rows
 
 
-        for r in data_rows:
-            d = {headers[i]: r[i] if i < len(r) else "" for i in range(len(headers))}
-            all_sheet_rows.append(d)
+def load_from_csv():
+    """Load rows from SW_Events.csv for local testing."""
+    # Use the CSV that actually exists in /data
+    csv_path = os.path.join(
+        os.path.dirname(__file__), "data", "SW_Events.csv"
+    )
 
-    return all_sheet_rows
+    if not os.path.exists(csv_path):
+        print(f"⚠ {csv_path} not found — returning 0 rows")
+        return []
+
+    rows = []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rows.append(row)
+
+    print(f"Loaded {len(rows)} rows from {os.path.basename(csv_path)}")
+    return rows
+
 
 def return_id(model, name):
     """Get or create a record by name and return its ID."""
