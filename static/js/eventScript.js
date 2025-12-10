@@ -12,6 +12,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 }); 
             }); 
         }); 
+        document.querySelectorAll('.edit-btn').forEach (button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                const eventId = button.dataset.id;
+
+                fetch(`api/v1/events/${id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById("edit-title").value = data.title;
+                        document.getElementById("edit-date").value = data.date;
+                        document.getElementById("edit-location").value = data.location;
+                        document.getElementById("edit-attendance").value = data.attendance;
+                        document.getElementById("edit-event-type").value = data.event_type;
+                        document.getElementById("edit-organizer").value = data.organizer;
+
+                    });
+
+            });
+        });
+            
         
         const popupWindow = document.createElement("div"); 
         popupWindow.className = "event-card-popup"; 

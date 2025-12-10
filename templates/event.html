@@ -188,7 +188,7 @@
 <!-- Add Event Modal -->
 <div class="modal fade" id="addEventModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form method="POST" action="{{ url_for('homepage.add_event') }}">
+    <form id="editEventForm" method="POST" action="{{ url_for('homepage.add_event') }}">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add New Event</h5>
@@ -198,32 +198,32 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">Event Title</label>
-            <input type="text" name="title" class="form-control" required>
+            <input type="text" name="title" class="form-control" id="edit-title" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Date</label>
-            <input type="date" name="date" class="form-control" required>
+            <input type="date" name="date" class="form-control" id="edit-date" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Location</label>
-            <input type="text" name="location" class="form-control" required>
+            <input type="text" name="location" class="form-control" id="edit-location" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Attendance</label>
-            <input type="number" name="attendance" class="form-control" required>
+            <input type="number" name="attendance" class="form-control" id="edit-attendance" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Lead Organizer</label>
-            <input type="number" name="lead_organizer" class="form-control" required>
+            <input type="number" name="lead_organizer" class="form-control" id="edit-organizer"required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Event Type</label>
-            <input type="number" name="type_id" class="form-control" required>
+            <input type="number" name="type_id" class="form-control" id="edit-event-type" required>
           </div>
 
           <div class="mb-3">
@@ -309,7 +309,7 @@
                     </td>
 
                     <td class="align-middle text-center">
-                      <button data-id="{{ event.id }}" class="edit-btn btn btn-primary btn-info bg-gradient-info text-xs font-weight-bold" type="button">Edit</button>
+                      <button data-id="{{ event.id }}" class="edit-btn btn btn-primary btn-info bg-gradient-info text-xs font-weight-bold" data-bs-toggle="modal" data-bs-target="editEventModal" type="button">Edit</button>
                       <button data-id="{{ event.id }}" class="delete-btn btn btn-secondary btn-danger bg-gradient-danger text-xs font-weight-bold" type="reset">Delete</button>
 
                     </td>
