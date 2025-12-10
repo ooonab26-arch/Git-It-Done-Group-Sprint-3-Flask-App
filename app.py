@@ -23,7 +23,7 @@ def create_app():
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
     if not db_url:
-        print("\n⚠ WARNING: DATABASE_URL not found — using SQLite locally\n")
+        print("\nWARNING: DATABASE_URL not found — using SQLite locally\n")
         db_url = "sqlite:///events.db"
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -34,7 +34,7 @@ def create_app():
     if creds_str:
         app.config["GOOGLE_SHEETS_CREDENTIALS"] = json.loads(creds_str)
     else:
-        app.config["GOOGLE_SHEETS_CREDENTIALS"] = None
+        app.config["GOOGLE_SHEETS_CREDENTIALS"] = None    
     app.config["GOOGLE_SHEETS_SHEET_ID"] = os.environ.get("GOOGLE_SHEETS_SHEET_ID")
     app.config["GOOGLE_SHEETS_TABS"] = os.environ.get("GOOGLE_SHEETS_TABS")
     
@@ -48,6 +48,8 @@ def create_app():
         return User.query.get(int(user_id))
 
     # OAuth
+    app.config['GOOGLE_CLIENT_ID'] = os.getenv("GOOGLE_CLIENT_ID")
+    app.config['GOOGLE_CLIENT_SECRET'] = os.getenv("GOOGLE_CLIENT_SECRET")
     init_oauth(app)
 
     # Register blueprints
@@ -66,5 +68,6 @@ def create_app():
 
     # Ensure reports folder exists
     os.makedirs(os.path.join(app.instance_path, "reports"), exist_ok=True)
+    print("GOOGLE_CLIENT_SECRET:", os.getenv("GOOGLE_CLIENT_SECRET"))
 
     return app
