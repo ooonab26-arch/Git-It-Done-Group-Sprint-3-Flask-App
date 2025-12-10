@@ -258,13 +258,21 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Lead Organizer ID</label>
-            <input type="number" name="lead_organizer" class="form-control" required>
+            <label class="form-label">Lead Organizer ID </label>
+            <select name="lead_organizer" class="form-control" required>
+                {% for organizer in organizers %}
+                  <option value="{{organizer.id}}">{{organizer.name}}</option>
+                {% endfor %}
+            </select>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Event Type ID</label>
-            <input type="number" name="type_id" class="form-control" required>
+            <select name="type_id" class="form-control" required>
+              {% for t in event_types %}
+                <option value="{{t.id}}">{{t.name}}</option>
+              {% endfor %}
+            </select>
           </div>
 
           <div class="mb-3">
