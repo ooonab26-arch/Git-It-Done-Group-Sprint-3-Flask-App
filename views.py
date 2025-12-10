@@ -184,7 +184,7 @@ def events_page():
 
     categories = [{"name": r.category, "count": r.count} for r in category_results]
         
-    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year)
+    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year, organizers=organizers, event_types=event_types)
 
 @main_blueprint.route('/profile')
 def profile():
