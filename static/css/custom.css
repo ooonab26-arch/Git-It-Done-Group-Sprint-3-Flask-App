@@ -128,12 +128,12 @@ body.bg-gray-100 {
 
 .ps{
 
-  overflow: visible ;
+  overflow: visible !important;
 }
 
 .sidenav .navbar-collapse{
-  height: auto ;
-  max-height: none;
+  height: auto !important;
+  max-height: none !important;
 }
 
 .sidenav.bg-white {
