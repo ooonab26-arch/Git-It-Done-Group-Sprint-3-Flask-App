@@ -153,8 +153,13 @@ def delete_event(event_id):
 @main_blueprint.route('/api/v1/events')
 def events_page():
     curEventList = getEventsList()
+    years = sorted({ event["date"].year for event in curEventList if event.get("date") is not None })
+    specific_year = request.args.get("year", type=int)
 
-    return render_template('event.html', events=curEventList)
+    if specific_year:
+        curEventList = [event for event in curEventList if event.get("date") is not None and event["date"].year == specific_year]
+        
+    return render_template('event.html', events=curEventList,years=years,specific_year=specific_year)
 
 @main_blueprint.route('/profile')
 def profile():

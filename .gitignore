@@ -2,3 +2,4 @@ instance/events.db
 .env
 __pycache__/
 *.pyc
+app.py
