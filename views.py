@@ -117,6 +117,7 @@ def getEventsList():
     events = (
         db.session.query(Events, Organizer)
         .outerjoin(Organizer, Organizer.id == Events.lead_organizer)
+        .join(Event_Type, Events.type_id == Event_Type.id)
         .order_by(Events.date.desc())
         .all()
     )
@@ -129,6 +130,7 @@ def getEventsList():
             "id": e.id,
             "title": e.title,
             "date": e.date,
+            "type_name": e.event_type.name,
             "location": e.location,
             "attendance": e.attendance,
             "lead_organizer": organizer.name if organizer else "N/A",
@@ -162,8 +164,20 @@ def events_page():
     if specific_year:
         curEventList = [event for event in curEventList if event.get("date") is not None and event["date"].year == specific_year]
     
-    
-    return render_template('event.html', events=curEventList,years=years,specific_year=specific_year, organizers=organizers, event_types=event_types)
+    # Get event category counts
+    category_results = (
+        db.session.query(
+            Event_Type.name.label("category"),
+            func.count(Events.id).label("count")
+        )
+        .join(Events, Events.type_id == Event_Type.id)
+        .group_by(Event_Type.name)
+        .all()
+    )
+
+    categories = [{"name": r.category, "count": r.count} for r in category_results]
+        
+    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year)
 
 @main_blueprint.route('/profile')
 def profile():
