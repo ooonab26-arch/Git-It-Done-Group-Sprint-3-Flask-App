@@ -213,9 +213,17 @@
   <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addEventModal">
     + Add New Event
   </button>
-  <button class="btn btn-secondary">
-    Filter
-  </button>
+
+  <form method="get" action="{{ url_for('homepage.events_page') }}">
+    <select name="year" onchange="this.form.submit()" style="font-weight:bold; background:#4155c4; color:#ffffff; border-radius:0.5rem; padding:10px 10px; font-size: 0.8rem;">
+      <option value="">All Years</option>
+      {% for year in years %}
+        <option value="{{ year }}" {% if specific_year == year %}selected{% endif %}>
+          {{ year }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
 </div>
 
 <!-- Add Event Modal -->
