@@ -158,7 +158,24 @@
 
 
   <div class="container-fluid py-4">
+  <div class="container-fluid py-4">
    
+    <div class="row justify-content-center mb-4">
+      {% for cat in categories %}
+      <div class="col-xl-4 col-md-4 col-sm-6 mb-4">
+        <div class="card custom-top-card category-card hover-card" data-category="{{ cat.name }}">
+          <div class="card-body text-center">
+            <p class="text-center mb-1 font-weight-bold">{{ cat.name }}</p>
+            <div class="text-center">
+              <h6 class="mb-0 font-weight-bold">{{ cat.count }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
     <div class="row justify-content-center mb-4">
       {% for cat in categories %}
       <div class="col-xl-4 col-md-4 col-sm-6 mb-4">
@@ -227,21 +244,11 @@
           <div class="mb-3">
             <label class="form-label">Lead Organizer</label>
             <input type="number" name="lead_organizer" class="form-control" required>
-            <label class="form-label">Lead Organizer ID </label>
-            <select name="lead_organizer" class="form-control" required>
-                {% for organizer in organizers %}
-                  <option value="{{organizer.id}}">{{organizer.name}}</option>
-                {% endfor %}
-            </select>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Event Type ID</label>
-            <select name="type_id" class="form-control" required>
-              {% for t in event_types %}
-                <option value="{{t.id}}">{{t.name}}</option>
-              {% endfor %}
-            </select>
+            <label class="form-label">Event Type</label>
+            <input type="number" name="type_id" class="form-control" required>
           </div>
 
           <div class="mb-3">
