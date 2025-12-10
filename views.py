@@ -179,6 +179,22 @@ def events_page():
         
     return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year)
 
+
+@main_blueprint.route('/api/v1/events/<int:event_id>')
+def get_event(event_id):
+    event = Events.query.get(event_id)
+    
+    if not event:
+        return jsonify({"error": "event not found"}) ,404
+    
+    return {
+        "id": event.id,
+        "title": event.title,
+        "date": event.date,
+        "type_name": event.event_type.name,
+        "location": event.location,
+        "attendance": event.attendance        
+    }
 @main_blueprint.route('/profile')
 def profile():
     return render_template('profile.html')
