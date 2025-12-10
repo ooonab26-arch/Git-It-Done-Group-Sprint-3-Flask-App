@@ -116,9 +116,6 @@ def google_login():
 
 @auth_blueprint.route('/google/callback')
 def google_callback():
-    """
-    Handle the redirect back from Google and log the user in.
-    """
     token = oauth.google.authorize_access_token()
     user_info = token.get("userinfo")
     if not user_info:
@@ -136,29 +133,25 @@ def google_callback():
         flash("Google did not return an email address.", "danger")
         return redirect(url_for('auth.signIn'))
 
-    # Try to find user by google_id first
-    user = User.query.filter_by(google_id=google_id).first()
+    # 1. Restrict domain
+    if not email.endswith("@colby.edu"):
+        flash("Only @colby.edu email addresses are allowed.", "danger")
+        return redirect(url_for('auth.signIn'))
 
-    # If not found, try by email
+    # 2. Fetch existing user
+    user = User.query.filter_by(email=email).first()
+
+    # 3. Do NOT auto-create users
     if not user:
-        user = User.query.filter_by(email=email).first()
+        flash("No account found. Please sign up first.", "warning")
+        return redirect(url_for('auth.signUp'))
 
-    # If still not found, create new user
-    if not user:
-        user = User(
-            name=name,
-            email=email,
-            position="Google User",
-            google_id=google_id,
-        )
-        db.session.add(user)
-    else:
-        # Link Google ID to existing account if not already set
-        if not getattr(user, "google_id", None):
-            user.google_id = google_id
-
-    db.session.commit()
+    # 4. Link Google ID if missing
+    if not user.google_id:
+        user.google_id = google_id
+        db.session.commit()
 
     login_user(user)
     flash(f"Signed in as {name} via Google", "success")
     return redirect(url_for('homepage.dashboard'))
+
