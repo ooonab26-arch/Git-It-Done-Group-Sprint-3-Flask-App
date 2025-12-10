@@ -114,17 +114,15 @@ def dashboard():
     return render_template('dashboard.html', months=all_months, attendance=attendance_twelve_months, growth=growth_twelve_months, category_percentages=category_percentages, suggestions=suggestions, attendance_total = attendance_total, event_total = event_total)
 
 def getEventsList():
-    # Query all events from most recent to oldest
-    events = db.session.query(Events).order_by(Events.date.desc()).all()
+    events = (
+        db.session.query(Events, Organizer)
+        .outerjoin(Organizer, Organizer.id == Events.lead_organizer)
+        .order_by(Events.date.desc())
+        .all()
+    )
 
-    # Prepare data for the template
     event_list = []
-    for e in events:
-        # lead_organizer name
-        organizer = db.session.query(Organizer).filter_by(id=e.lead_organizer).first()
-        organizer_name = organizer.name if organizer else "N/A"
-
-        # partners names (many-to-many)
+    for e, organizer in events:
         partner_names = [p.name for p in e.partners] if e.partners else []
 
         event_list.append({
@@ -133,11 +131,12 @@ def getEventsList():
             "date": e.date,
             "location": e.location,
             "attendance": e.attendance,
-            "lead_organizer": organizer_name,
-            "partners": ", ".join(partner_names)  # join multiple partners into a string
+            "lead_organizer": organizer.name if organizer else "N/A",
+            "partners": ", ".join(partner_names),
         })
     
     return event_list
+
 
 @main_blueprint.route('/api/v1/events/<int:event_id>', methods=['DELETE'])
 def delete_event(event_id):
