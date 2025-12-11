@@ -1,4 +1,6 @@
 from flask import Flask
+import cloudinary
+import cloudinary.uploader
 from flask_login import LoginManager
 from models import db, Events, User
 from load_data import load_events
@@ -38,6 +40,12 @@ def create_app():
     app.config["GOOGLE_SHEETS_SHEET_ID"] = os.environ.get("GOOGLE_SHEETS_SHEET_ID")
     app.config["GOOGLE_SHEETS_TABS"] = os.environ.get("GOOGLE_SHEETS_TABS")
     
+    # Cloudinary config
+    cloudinary.config(
+        cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+        cloud_key = os.getenv('CLOUDINARY_API_KEY'),
+        cloud_secret = os.getenv('CLOUDINARY_API_SECRET')
+    )
     db.init_app(app)
 
     login_manager.init_app(app)

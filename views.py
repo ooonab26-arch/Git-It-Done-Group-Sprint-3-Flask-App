@@ -4,6 +4,7 @@ from flask_login import login_required
 from flask_login import current_user
 from sqlalchemy import extract, func
 from datetime import datetime
+import cloudinary.uploader
 from calendar import month_name
 from flask import request, redirect, url_for, current_app, render_template, jsonify, send_from_directory
 from report_gen import read_events, summarize
@@ -142,7 +143,8 @@ def getEventsList():
             "attendance": e.attendance,
             "description": e.description,
             "lead_organizer": organizer.name if organizer else "N/A",
-            "partners": ", ".join(partner_names)
+            "partners": ", ".join(partner_names),
+            "poster_url": e.poster_url
         })
     
     return event_list
@@ -205,39 +207,6 @@ def get_event(event_id):
         "description" : event.description,
         "lead_organizer" : event.lead_organizer    
     })
-    
-    
-@main_blueprint.route('/api/v1/events/<int:event_id>', methods=['POST'])
-def update_event(event_id):
-    event = Events.query.get(event_id)
-    
-    if not event: 
-        return jsonify({"error": "event not found"}) ,404
-    
-    event.title = request.form.get('title')
-    event.date = datetime.strptime(request.form.get('date'), "%Y-%m-%d")
-    event.location = request.form.get('location')
-    event.attendance = int(request.form.get('attendance'))
-    event.description = request.form.get('description')
-    event.lead_organizer = int(request.form.get('lead_organizer'))
-    event.type_id = int(request.form.get('type_id'))
-    
-    poster_file = request.files.get('poster')
-    if poster_file and poster_file.filename != "":
-        filename = poster_file.filename
-        upload_dir = os.path.join(current_app.root_path, "static", "images", "posters")
-        os.makedirs(upload_dir, exist_ok=True)
-        poster_file.save(os.path.join(upload_dir, filename))
-        
-        if event.poster:
-            event.poster.filename = poster_file.filename
-        else:
-            processed_file = ProcessedFile(filename=poster_file.filename, event=event)
-            db.session.add(processed_file)
-            
-    db.session.commit()
-    return redirect(url_for('homepage.events_page'))
-
   
 @main_blueprint.route('/profile')
 def profile():
@@ -317,65 +286,82 @@ def report_page():
     )
 
     
-@main_blueprint.route('/api/v1/add-event', methods=['POST'])
+@main_blueprint.route('/api/v1/add_event', methods=['POST'])
 def add_event():
+    # --- Extract form data ---
     title = request.form.get('title')
-    date_str = request.form.get('date')
+    date_obj = datetime.strptime(request.form.get('date'), "%Y-%m-%d")
     location = request.form.get('location')
-    attendance = request.form.get('attendance')
+    attendance = int(request.form.get('attendance'))
     description = request.form.get('description')
-    lead_organizer = request.form.get('lead_organizer')
-    type_id = request.form.get('type_id')
-    partner_ids = request.form.get('partner_ids')
+    lead_organizer = int(request.form.get('lead_organizer'))
+    type_id = int(request.form.get('type_id'))
 
-    poster_file = request.files.get('poster')
-    
-   
-    
-
-    # Convert date
-    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-
-    # Create event
+    # --- Create new event ---
     new_event = Events(
         title=title,
         date=date_obj,
         location=location,
-        attendance=int(attendance),
+        attendance=attendance,
         description=description,
-        lead_organizer=int(lead_organizer),
-        type_id=int(type_id)
+        lead_organizer=lead_organizer,
+        type_id=type_id
     )
-    
     db.session.add(new_event)
-    db.session.commit()
+    db.session.commit()  # Commit first so event has an ID
 
+    # --- Handle poster upload ---
+    poster_file = request.files.get('file_upload')
     if poster_file and poster_file.filename != "":
-        filename = poster_file.filename
-        upload_dir = os.path.join(current_app.root_path, "static", "images", "posters")
-        os.makedirs(upload_dir, exist_ok=True)
-        poster_file.save(os.path.join(upload_dir, filename))
-        
+        upload_result = cloudinary.uploader.upload(poster_file)
+        new_event.poster_url = upload_result["secure_url"]
+
         processed_file = ProcessedFile(
-            filename=filename,
+            filename=poster_file.filename,
             event=new_event
         )
-        
-        
         db.session.add(processed_file)
-        # db.session.commit()
-
-    # # Add partners many-to-many
-    # if partner_ids:
-    #     ids = [int(pid.strip()) for pid in partner_ids.split(",") if pid.strip().isdigit()]
-    #     for pid in ids:
-    #         partner_obj = Organizer.query.get(pid)
-    #         if partner_obj:
-    #             new_event.partners.append(partner_obj)
-
-    db.session.commit()
+        db.session.commit()
 
     return redirect(url_for('homepage.events_page'))
+
+
+@main_blueprint.route('/api/v1/events/<int:event_id>', methods=['POST'])
+def update_event(event_id):
+    event = Events.query.get(event_id)
+    if not event:
+        return jsonify({"error": "event not found"}), 404
+
+    # --- Update event fields ---
+    event.title = request.form.get('title')
+    event.date = datetime.strptime(request.form.get('date'), "%Y-%m-%d")
+    event.location = request.form.get('location')
+    event.attendance = int(request.form.get('attendance'))
+    event.description = request.form.get('description')
+    event.lead_organizer = int(request.form.get('lead_organizer'))
+    event.type_id = int(request.form.get('type_id'))
+
+    # --- Handle poster upload ---
+    poster_file = request.files.get('file_upload')
+    if poster_file and poster_file.filename != "":
+        upload_result = cloudinary.uploader.upload(poster_file)
+        event.poster_url = upload_result["secure_url"]
+
+        # Check if a ProcessedFile already exists for this event
+        processed_file = ProcessedFile.query.filter_by(event_id=event.id).first()
+        if processed_file:
+            processed_file.filename = poster_file.filename
+        else:
+            new_file = ProcessedFile(
+                filename=poster_file.filename,
+                event=event
+            )
+            db.session.add(new_file)
+
+
+    db.session.commit()
+    return redirect(url_for('homepage.events_page'))
+
 
 
 @main_blueprint.post('/api/v1/reports/generate')
@@ -491,3 +477,15 @@ def api_attendance_by_year():
         "events": count_twelve_months
     })
 
+@main_blueprint.get('/api/v1/upload_poster/<int:event_id>')
+def upload_poster(event_id):
+    file = request.files['poster']
+    upload_result = cloudinary.uploader.upload(file)
+    event = Events.query.get(event_id)
+
+    poster_url = upload_result["secure_url"]
+    event = Events.query.get(event_id)
+    event.poster_url = poster_url
+    db.session.commit()
+
+    return redirect(url_for('event_detail', event_id=event_id))
