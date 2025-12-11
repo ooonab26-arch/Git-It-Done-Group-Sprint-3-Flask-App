@@ -299,6 +299,7 @@
                             "poster": event.poster_url if event.poster_url else url_for("static", filename="images/default_poster.jpeg"),                           "date": event.date.strftime("%B %d, %Y"),
                             "type": event.type_name,
                             "location": event.location,
+                            "description" : event.description,
                             "attendance": event.attendance,
                             "lead_organizer": event.lead_organizer,
                             "partners": event.partners

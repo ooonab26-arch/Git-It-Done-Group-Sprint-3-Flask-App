@@ -84,10 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <div class="event-card-text">
                             <div><span class = "popup-text">Date:</span> ${eventData.date}</div>
-                            <div><span class = "popup-text">Location:</span> ${eventData.location}</div>
-                            <div><span class = "popup-text">Attendance:</span> ${eventData.attendance}</div>
-                            <div><span class = "popup-text">Lead organizer:</span> ${eventData.lead_organizer}</div>
-                            <div><span class = "popup-text">Collaborators:</span> ${eventData.partners}</div>
+                            <div><span class = "popup-text">Description:</span> ${eventData.description}</div>
+                            
                     </div>
 
                     <div class="social-share-container">
