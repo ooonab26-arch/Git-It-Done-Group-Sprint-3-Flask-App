@@ -1,6 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
 from models import ProcessedFile, db, Events, Event_Type, Organizer
-from flask import Flask, Blueprint, app, render_template
+from flask import Blueprint, render_template
+from flask_login import login_required
+from flask_login import current_user
 from sqlalchemy import extract, func
 from datetime import datetime
 from calendar import month_name
@@ -10,8 +11,14 @@ import os
 
 main_blueprint = Blueprint('homepage', __name__)
     
-        
 @main_blueprint.route('/')
+def home():     
+    if current_user.is_authenticated:
+        return redirect(url_for('homepage.dashboard'))
+    return redirect(url_for('auth.signIn'))
+
+@main_blueprint.route('/api/v1/dashboard')
+@login_required
 def dashboard():
     results = (db.session.query(
         extract('month', Events.date).label('month'),
@@ -178,7 +185,7 @@ def events_page():
 
     categories = [{"name": r.category, "count": r.count} for r in category_results]
         
-    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year,organizers=organizers,event_types=event_types)
+    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year, organizers=organizers, event_types=event_types)
 
 
 @main_blueprint.route('/api/v1/events/<int:event_id>', methods=['GET'])
