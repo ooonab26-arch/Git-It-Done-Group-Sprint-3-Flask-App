@@ -107,11 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <i class="fa fa-calendar"></i> 
                         </a> </div>` ; 
                         
-                const eventURL = `https://www.colby.edu/now/?` +
-                    `title=${encodeURIComponent(eventData.title)}` +
-                    `&date=${encodeURIComponent(eventData.date)}` +
-                    `&location=${encodeURIComponent(eventData.location)}` +
-                    `&description=${encodeURIComponent(eventData.description || "")}`;
+                const eventURL = `https://www.colby.edu/now/submission-form/events/` ;
 
                 const eventTitle = encodeURIComponent(eventData.title); 
                 const eventDescription = encodeURIComponent(eventData.description || "");
@@ -126,6 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 linkedInBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventURL)}`;
                 linkedInBtn.target = "_blank";
 
+                const colbyNow = popupWindow.querySelector(".copy-link");
+                colbyNow.href = eventURL;
+                colbyNow.target = "_blank";
+
+
                 popupWindow.querySelector(".download").addEventListener("click", (e) => {
                     e.stopPropagation();
 
@@ -135,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     Attendance: ${eventData.attendance}
                     Organizer: ${eventData.lead_organizer}
                     Description: ${eventData.description || "N/A"}
-                    URL: ${eventURL}
                     `;
 
                     const blob = new Blob([fileContent], { type: "text/plain" });
