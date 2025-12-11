@@ -33,6 +33,7 @@ class Events(db.Model):
     attendance = db.Column(db.Integer, nullable=True)
     location = db.Column(db.String(80), nullable=True)
     description = db.Column(db.Text, nullable=True)
+    poster_url = db.Column(db.String(500), nullable=True)
 
     # Foreign Keys (table names now match __tablename__ below)
     advert_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'), nullable=True)
