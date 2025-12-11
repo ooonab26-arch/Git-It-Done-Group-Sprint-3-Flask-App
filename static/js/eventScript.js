@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("edit-event-type").value = "";
             document.getElementById("edit-organizer").value = "";
 
-            document.getElementById("editEventForm").action = "{{ url_for('homepage.add_event') }}";
+            document.getElementById("editEventForm").action = "/api/v1/add_event";
         });
 
         

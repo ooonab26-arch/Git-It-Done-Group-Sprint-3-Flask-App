@@ -117,9 +117,7 @@ def google_login():
 @auth_blueprint.route('/google/callback')
 def google_callback():
     token = oauth.google.authorize_access_token()
-    user_info = token.get("userinfo")
-    if not user_info:
-        user_info = oauth.google.parse_id_token(token)
+    user_info = token.get("userinfo") or oauth.google.parse_id_token(token)
 
     if not user_info:
         flash("Failed to get user info from Google.", "danger")
@@ -129,29 +127,27 @@ def google_callback():
     email = user_info.get("email")
     name = user_info.get("name") or "Google User"
 
-    if not email:
-        flash("Google did not return an email address.", "danger")
-        return redirect(url_for('auth.signIn'))
-
-    # 1. Restrict domain
-    if not email.endswith("@colby.edu"):
+    # Ensure email exists and is @colby.edu
+    if not email or not email.endswith("@colby.edu"):
         flash("Only @colby.edu email addresses are allowed.", "danger")
         return redirect(url_for('auth.signIn'))
 
-    # 2. Fetch existing user
-    user = User.query.filter_by(email=email).first()
+    # Fetch existing user (case-insensitive)
+    user = User.query.filter(User.email.ilike(email)).first()
 
-    # 3. Do NOT auto-create users
     if not user:
-        flash("No account found. Please sign up first.", "warning")
-        return redirect(url_for('auth.signUp'))
-
-    # 4. Link Google ID if missing
-    if not user.google_id:
-        user.google_id = google_id
+        # Auto-create new user if not found
+        user = User(name=name, email=email, position="Staff", google_id=google_id)
+        db.session.add(user)
         db.session.commit()
+        flash("Account created via Google OAuth", "success")
+    else:
+        # Link Google ID if missing
+        if not user.google_id:
+            user.google_id = google_id
+            db.session.commit()
+        flash(f"Signed in as {name} via Google", "success")
 
+    # Log in the user
     login_user(user)
-    flash(f"Signed in as {name} via Google", "success")
     return redirect(url_for('homepage.dashboard'))
-
