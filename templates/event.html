@@ -218,18 +218,32 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Lead Organizer</label>
-            <input type="number" name="lead_organizer" class="form-control" id="edit-organizer"required>
+            <label class="form-label">Event Description</label>
+            <input type="text" name="description" class="form-control" id="edit-description" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Event Type</label>
-            <input type="number" name="type_id" class="form-control" id="edit-event-type" required>
+            <label class="form-label">Lead Organizer</label>
+              <select id="edit-organizer" name="lead_organizer" class="form-control" required>
+                {% for organizer in organizers %}
+                  <option value="{{organizer.id}}">{{organizer.name}}</option>
+                {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Event Type ID</label>
+              <select id="edit-event-type" name="type_id" class="form-control" required>
+                {% for t in event_types %}
+                  <option value="{{t.id}}">{{t.name}}</option>
+                {% endfor %}
+            </select>
+
           </div>
 
           <div class="mb-3">
             <label class="form-label">Poster Upload</label>
-            <input type="file" name="file_upload" class="form-control" optional>
+            <input type="file" name="file_upload" class="form-control" >
           </div>
 
           <!-- <div class="mb-3">
@@ -310,7 +324,7 @@
                     </td>
 
                     <td class="align-middle text-center">
-                      <button data-id="{{ event.id }}" class="edit-btn btn btn-primary btn-info bg-gradient-info text-xs font-weight-bold" data-bs-toggle="modal" data-bs-target="editEventModal" type="button">Edit</button>
+                      <button data-id="{{ event.id }}" class="edit-btn btn btn-primary btn-info bg-gradient-info text-xs font-weight-bold" type="button">Edit</button>
                       <button data-id="{{ event.id }}" class="delete-btn btn btn-secondary btn-danger bg-gradient-danger text-xs font-weight-bold" type="reset">Delete</button>
 
                     </td>

@@ -133,8 +133,9 @@ def getEventsList():
             "type_name": e.event_type.name,
             "location": e.location,
             "attendance": e.attendance,
+            "description": e.description,
             "lead_organizer": organizer.name if organizer else "N/A",
-            "partners": ", ".join(partner_names),
+            "partners": ", ".join(partner_names)
         })
     
     return event_list
@@ -177,24 +178,60 @@ def events_page():
 
     categories = [{"name": r.category, "count": r.count} for r in category_results]
         
-    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year)
+    return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year,organizers=organizers,event_types=event_types)
 
 
-@main_blueprint.route('/api/v1/events/<int:event_id>')
+@main_blueprint.route('/api/v1/events/<int:event_id>', methods=['GET'])
 def get_event(event_id):
     event = Events.query.get(event_id)
     
     if not event:
         return jsonify({"error": "event not found"}) ,404
     
-    return {
+    return jsonify({
         "id": event.id,
         "title": event.title,
-        "date": event.date,
-        "type_name": event.event_type.name,
+        "date": event.date.strftime("%Y-%m-%d"),
+        "type_id": event.type_id,
         "location": event.location,
-        "attendance": event.attendance        
-    }
+        "attendance": event.attendance,
+        "description" : event.description,
+        "lead_organizer" : event.lead_organizer    
+    })
+    
+    
+@main_blueprint.route('/api/v1/events/<int:event_id>', methods=['POST'])
+def update_event(event_id):
+    event = Events.query.get(event_id)
+    
+    if not event: 
+        return jsonify({"error": "event not found"}) ,404
+    
+    event.title = request.form.get('title')
+    event.date = datetime.strptime(request.form.get('date'), "%Y-%m-%d")
+    event.location = request.form.get('location')
+    event.attendance = int(request.form.get('attendance'))
+    event.description = request.form.get('description')
+    event.lead_organizer = int(request.form.get('lead_organizer'))
+    event.type_id = int(request.form.get('type_id'))
+    
+    poster_file = request.files.get('poster')
+    if poster_file and poster_file.filename != "":
+        filename = poster_file.filename
+        upload_dir = os.path.join(current_app.root_path, "static", "images", "posters")
+        os.makedirs(upload_dir, exist_ok=True)
+        poster_file.save(os.path.join(upload_dir, filename))
+        
+        if event.poster:
+            event.poster.filename = poster_file.filename
+        else:
+            processed_file = ProcessedFile(filename=poster_file.filename, event=event)
+            db.session.add(processed_file)
+            
+    db.session.commit()
+    return redirect(url_for('homepage.events_page'))
+
+  
 @main_blueprint.route('/profile')
 def profile():
     return render_template('profile.html')
@@ -279,6 +316,7 @@ def add_event():
     date_str = request.form.get('date')
     location = request.form.get('location')
     attendance = request.form.get('attendance')
+    description = request.form.get('description')
     lead_organizer = request.form.get('lead_organizer')
     type_id = request.form.get('type_id')
     partner_ids = request.form.get('partner_ids')
@@ -297,6 +335,7 @@ def add_event():
         date=date_obj,
         location=location,
         attendance=int(attendance),
+        description=description,
         lead_organizer=int(lead_organizer),
         type_id=int(type_id)
     )
@@ -317,7 +356,7 @@ def add_event():
         
         
         db.session.add(processed_file)
-        db.session.commit()
+        # db.session.commit()
 
     # # Add partners many-to-many
     # if partner_ids:
