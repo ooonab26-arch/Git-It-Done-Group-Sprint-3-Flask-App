@@ -342,20 +342,22 @@ def update_event(event_id):
     event.type_id = int(request.form.get('type_id'))
 
     # --- Handle poster upload ---
-    poster_file = request.files.get('poster')
+    poster_file = request.files.get('file_upload')
     if poster_file and poster_file.filename != "":
         upload_result = cloudinary.uploader.upload(poster_file)
         event.poster_url = upload_result["secure_url"]
 
-        # Update existing ProcessedFile or create new
-        if event.poster:
-            event.poster.filename = poster_file.filename
+        # Check if a ProcessedFile already exists for this event
+        processed_file = ProcessedFile.query.filter_by(event_id=event.id).first()
+        if processed_file:
+            processed_file.filename = poster_file.filename
         else:
-            processed_file = ProcessedFile(
+            new_file = ProcessedFile(
                 filename=poster_file.filename,
                 event=event
             )
-            db.session.add(processed_file)
+            db.session.add(new_file)
+
 
     db.session.commit()
     return redirect(url_for('homepage.events_page'))
