@@ -84,10 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <div class="event-card-text">
                             <div><span class = "popup-text">Date:</span> ${eventData.date}</div>
-                            <div><span class = "popup-text">Location:</span> ${eventData.location}</div>
-                            <div><span class = "popup-text">Attendance:</span> ${eventData.attendance}</div>
-                            <div><span class = "popup-text">Lead organizer:</span> ${eventData.lead_organizer}</div>
-                            <div><span class = "popup-text">Collaborators:</span> ${eventData.partners}</div>
+                            <div><span class = "popup-text">Description:</span> ${eventData.description}</div>
+                            
                     </div>
 
                     <div class="social-share-container">
@@ -109,15 +107,49 @@ document.addEventListener("DOMContentLoaded", () => {
                             <i class="fa fa-calendar"></i> 
                         </a> </div>` ; 
                         
-                const eventURL = "https://www.colby.edu/now/"; 
+                const eventURL = `https://www.colby.edu/now/submission-form/events/` ;
+
                 const eventTitle = encodeURIComponent(eventData.title); 
+                const eventDescription = encodeURIComponent(eventData.description || "");
+                const eventLocation = encodeURIComponent(eventData.location || "");
+
+                const date = new Date(eventData.date);
+                const end = new Date(date.getTime() + 60 * 60 * 1000);
+                const formatted = date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+                const formattedEnd = end.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
                 const linkedInBtn = popupWindow.querySelector(".linkedin"); 
                 linkedInBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventURL)}`;
                 linkedInBtn.target = "_blank";
 
-                popupWindow.querySelector(".gmail").href = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=${eventTitle}&body=${encodeURIComponent(eventURL)}`;
-                popupWindow.querySelector(".calendar").href = `https://calendar.google.com/calendar/r/eventedit?text=${eventTitle}&dates=20251206T090000Z/20251206T100000Z&details=${encodeURIComponent(eventURL)}&sf=true&output=xml`;
+                const colbyNow = popupWindow.querySelector(".copy-link");
+                colbyNow.href = eventURL;
+                colbyNow.target = "_blank";
+
+
+                popupWindow.querySelector(".download").addEventListener("click", (e) => {
+                    e.stopPropagation();
+
+                    const fileContent = `Event: ${eventData.title}
+                    Date: ${eventData.date}
+                    Location: ${eventData.location}
+                    Attendance: ${eventData.attendance}
+                    Organizer: ${eventData.lead_organizer}
+                    Description: ${eventData.description || "N/A"}
+                    `;
+
+                    const blob = new Blob([fileContent], { type: "text/plain" });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `${eventData.title.replace(/\s+/g, "_")}.txt`;
+                    link.click();
+
+                });
+
+                
+
+                popupWindow.querySelector(".gmail").href = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=${eventTitle}&body=${eventDescription}`;
+                popupWindow.querySelector(".calendar").href = `https://calendar.google.com/calendar/r/eventedit?text=${eventTitle}&dates=${formatted}/${formattedEnd}&details=${eventDescription}&location=${eventLocation}`;
                 
                 popupWindow.querySelector(".social-share-container")
                     .addEventListener('click', e => e.stopPropagation());
