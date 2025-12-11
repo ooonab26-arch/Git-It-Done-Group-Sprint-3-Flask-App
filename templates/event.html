@@ -196,7 +196,8 @@
 <!-- Add Event Modal -->
 <div class="modal fade" id="addEventModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form method="POST" action="{{ url_for('homepage.add_event') }}">
+    <form id="editEventForm" method="POST" action="{{ url_for('homepage.add_event') }}">
+      <input type="hidden" id="edit-event-id" name="event_id">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add New Event</h5>
@@ -206,27 +207,32 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">Event Title</label>
-            <input type="text" name="title" class="form-control" required>
+            <input type="text" name="title" class="form-control" id="edit-title" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Date</label>
-            <input type="date" name="date" class="form-control" required>
+            <input type="date" name="date" class="form-control" id="edit-date" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Location</label>
-            <input type="text" name="location" class="form-control" required>
+            <input type="text" name="location" class="form-control" id="edit-location" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Attendance</label>
-            <input type="number" name="attendance" class="form-control" required>
+            <input type="number" name="attendance" class="form-control" id="edit-attendance" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Lead Organizer </label>
-            <select name="lead_organizer" class="form-control" required>
+            <label class="form-label">Event Description</label>
+            <input type="text" name="description" class="form-control" id="edit-description" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Lead Organizer</label>
+              <select id="edit-organizer" name="lead_organizer" class="form-control" required>
                 {% for organizer in organizers %}
                   <option value="{{organizer.id}}">{{organizer.name}}</option>
                 {% endfor %}
@@ -234,17 +240,18 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Event Type</label>
-            <select name="type_id" class="form-control" required>
-              {% for t in event_types %}
-                <option value="{{t.id}}">{{t.name}}</option>
-              {% endfor %}
+            <label class="form-label">Event Type ID</label>
+              <select id="edit-event-type" name="type_id" class="form-control" required>
+                {% for t in event_types %}
+                  <option value="{{t.id}}">{{t.name}}</option>
+                {% endfor %}
             </select>
+
           </div>
 
           <div class="mb-3">
             <label class="form-label">Poster Upload</label>
-            <input type="file" name="file_upload" class="form-control" optional>
+            <input type="file" name="file_upload" class="form-control" >
           </div>
 
           <!-- <div class="mb-3">

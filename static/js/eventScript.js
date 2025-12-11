@@ -12,6 +12,57 @@ document.addEventListener("DOMContentLoaded", () => {
                 }); 
             }); 
         }); 
+        document.querySelectorAll('.edit-btn').forEach (button => {
+            button.addEventListener('click', async (e) => {
+                e.stopPropagation();
+
+                const eventId = button.dataset.id;
+
+                const res = await fetch(`/api/v1/events/${eventId}`);
+                const data = await res.json();
+
+                
+                const modalTitle = document.querySelector("#addEventModal .modal-title");
+                const submitBtn = document.querySelector("#editEventForm button[type='submit']");
+
+                modalTitle.textContent = "Edit Event"
+                submitBtn.textContent = "Save Changes"
+
+                document.getElementById("edit-event-id").value = eventId;
+                document.getElementById("edit-title").value = data.title;
+                document.getElementById("edit-date").value = data.date;
+                document.getElementById("edit-location").value = data.location;
+                document.getElementById("edit-attendance").value = data.attendance;
+                document.getElementById("edit-description").value = data.description;
+                document.getElementById("edit-event-type").value = data.type_id;
+                document.getElementById("edit-organizer").value = data.lead_organizer;
+
+                document.getElementById("editEventForm").action = `/api/v1/events/${eventId}`;
+            
+                const modal = new bootstrap.Modal(document.getElementById('addEventModal'));
+                modal.show();
+
+            });
+        });
+        
+        document.querySelector('[data-bs-target="#addEventModal"]').addEventListener('click', () => {
+            const modalTitle = document.querySelector("#addEventModal .modal-title");
+            const submitBtn = document.querySelector("#editEventForm button[type='submit']");
+            modalTitle.textContent = "Add New Event";
+            submitBtn.textContent = "Add Event";
+
+            document.getElementById("edit-event-id").value = "";
+            document.getElementById("edit-title").value = "";
+            document.getElementById("edit-date").value = "";
+            document.getElementById("edit-location").value = "";
+            document.getElementById("edit-description").value = "";
+            document.getElementById("edit-attendance").value = "";
+            document.getElementById("edit-event-type").value = "";
+            document.getElementById("edit-organizer").value = "";
+
+            document.getElementById("editEventForm").action = "{{ url_for('homepage.add_event') }}";
+        });
+
         
         const popupWindow = document.createElement("div"); 
         popupWindow.className = "event-card-popup"; 
