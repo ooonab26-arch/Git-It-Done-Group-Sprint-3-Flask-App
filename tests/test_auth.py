@@ -25,3 +25,16 @@ def test_signin_invalid_credentials(client):
         follow_redirects=True,
     )
     assert b"Invalid email" in response.data
+
+def test_logout_requires_login(client):
+    response = client.get("/auth/api/v1/auth/logout")
+    assert response.status_code == 302
+
+def test_logout_logged_in(client):
+    client.post(
+        "/auth/api/v1/auth/signup",
+        data={"name": "A", "email": "a@a.com", "password": "pass"},
+    )
+
+    response = client.get("/auth/api/v1/auth/logout", follow_redirects=True)
+    assert b"Sign in" in response.data
