@@ -12,11 +12,13 @@ import os
 
 main_blueprint = Blueprint('homepage', __name__)
     
-@main_blueprint.route('/')
-def home():     
+@main_blueprint.route("/")
+def home():
+    """Landing route: show dashboard if logged in, else sign-in page."""
     if current_user.is_authenticated:
-        return redirect(url_for('homepage.dashboard'))
-    return redirect(url_for('auth.signIn'))
+        return dashboard()
+    return render_template("sign-in.html")
+
 
 @main_blueprint.route('/api/v1/dashboard')
 @login_required
@@ -188,6 +190,11 @@ def events_page():
     categories = [{"name": r.category, "count": r.count} for r in category_results]
         
     return render_template('event.html', events=curEventList,years=years,categories=categories,specific_year=specific_year, organizers=organizers, event_types=event_types)
+
+@main_blueprint.route("/events")
+def events_page_alias():
+    """Compatibility route so /events returns the events page."""
+    return events_page()
 
 
 @main_blueprint.route('/api/v1/events/<int:event_id>', methods=['GET'])

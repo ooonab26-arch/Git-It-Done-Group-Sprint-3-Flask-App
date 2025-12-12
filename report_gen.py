@@ -21,6 +21,11 @@ def api_get_years():
     year_list = [int(y.year) for y in years]
     return jsonify(year_list)
 
+# Alias so tests expecting /api/reports/years still work
+@reports_bp.get("/years")
+def api_get_years_plain():
+    return api_get_years()
+
 # -------------------------
 # Read events by year
 # -------------------------
@@ -64,9 +69,13 @@ def summarize(rows):
 # -------------------------
 # Generate report
 # -------------------------
-@reports_bp.post("/generate")
+@reports_bp.route("/generate", methods=["GET", "POST"])
 def api_generate_report():
-    data = request.get_json(silent=True) or {}
+    data = (
+        request.get_json(silent=True)
+        if request.method == "POST"
+        else request.args
+    )
     year = data.get("year")
     year = int(year) if year and str(year).isdigit() else None
 
