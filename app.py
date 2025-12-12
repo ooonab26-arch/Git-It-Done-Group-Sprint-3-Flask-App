@@ -16,7 +16,7 @@ print("Loaded TABS:", os.getenv("GOOGLE_SHEETS_TABS"))
 
 login_manager = LoginManager()
 
-def create_app():
+def create_app(testing = False):
     app = Flask(__name__, static_folder='static', template_folder='templates')
     app.config['SECRET_KEY'] = 'dev'
     db_url = os.environ.get('DATABASE_URL')
@@ -69,8 +69,8 @@ def create_app():
     with app.app_context():
         db.create_all()
         if Events.query.count() == 0:
-            print("No data found in database - begin loading csv data")
-            load_events()
+            if not testing:
+                load_events()
         else:
             print("Data already loaded - skipping csv import")
 

@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Events Report 2024</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+    }
+
+    .note {
+      margin-bottom: 16px;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      background: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-350 {
+      position: relative;
+      height: 350px;
+    }
+
+    .chart-350>canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #e5e7eb;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+    }
+
+    tfoot td {
+      font-weight: 600;
+      background: #f3f4f6;
+    }
+  </style>
+  <style>
+    /* Force landscape printing */
+    @page {
+      size: A4 landscape;
+      margin: 1cm;
+    }
+
+    /* Optional: Adjust layout for print */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: white !important;
+      }
+
+      /* Example: remove buttons or navbars if any */
+      .no-print,
+      nav,
+      .navbar,
+      .btn {
+        display: none !important;
+      }
+
+      /* Force charts to scale nicely */
+      canvas {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <h1>Events Report 2024</h1>
+  
+
+  <div class="card">
+    <b>Total Events:</b> 49<br>
+    <b>Total Attendees:</b> 595
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin-top:0">Events by Month</h3>
+      <div class="chart-350">
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Events by Type</h3>
+      <div class="chart-350">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Events (first 49)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Attendance</th>
+          <th>Location</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Financial Mindfulness &amp; Stress Management</td>
+          <td>2024-02-20</td>
+          <td>16:00:00</td>
+          <td>17:00:00</td>
+          <td>5</td>
+          <td>Pugh Center</td>
+          <td>Presentation</td>
+        </tr>
+        
+        <tr>
+          <td>Sexploration</td>
+          <td>2024-04-12</td>
+          <td>11:00:00</td>
+          <td>14:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Discussion</td>
+        </tr>
+        
+        <tr>
+          <td>Self-Care for Student Leaders</td>
+          <td>2024-04-17</td>
+          <td>15:30:00</td>
+          <td>17:30:00</td>
+          <td>30</td>
+          <td>Diamond</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Wellness Resources for SVP</td>
+          <td>2024-04-22</td>
+          <td>19:00:00</td>
+          <td>20:00:00</td>
+          <td>50</td>
+          <td>Diamond 122</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Blood Drive</td>
+          <td>2024-04-23</td>
+          <td>11:00:00</td>
+          <td>16:00:00</td>
+          <td>0</td>
+          <td>Missing</td>
+          <td>Wellness</td>
+        </tr>
+        
+        <tr>
+          <td>Life After Colby</td>
+          <td>2024-04-26</td>
+          <td>12:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Pugh Center</td>
+          <td>Workshop</td>
+        </tr>
+        
+        <tr>
+          <td>Stressbusters</td>
+          <td>2024-05-07</td>
+          <td>11:00:00</td>
+          <td>13:00:00</td>
+          <td>0</td>
+          <td>Spa</td>
+          <td>Wellness</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function () {
+      const monthLabels = [0, 7, 0, 35, 7, 0, 0, 0, 0, 0, 0, 0];
+    const eventsSeries = [0, 35, 0, 560, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    const pieLabels = ["Presentation", "Discussion", "Workshop", "Wellness"];
+    const pieValues = [7, 7, 14, 21];
+
+    const lineCtx = document.getElementById('lineChart');
+    const pieCtx = document.getElementById('pieChart');
+
+    // Line chart: events per month
+    new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: monthLabels,
+        datasets: [{
+          label: 'Events',
+          data: eventsSeries,
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59,130,246,0.15)',
+          fill: true,
+          tension: 0.2,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: true } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } }
+        }
+      }
+    });
+
+    // Pie chart: events by type
+    new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: pieLabels,
+        datasets: [{
+          data: pieValues,
+          backgroundColor: [
+            '#3B82F6', '#10B981', '#F59E0B',
+            '#EF4444', '#6366F1', '#EC4899'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+      }) ();
+  </script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const shouldPrint = params.get('print') === '1';
+
+      if (shouldPrint) {
+        window.addEventListener('load', function () {
+          window.print(); // user can then choose "Save as PDF"
+        });
+      }
+    })();
+  </script>
+
+</body>
+
+</html>

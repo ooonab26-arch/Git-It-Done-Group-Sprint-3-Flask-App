@@ -150,7 +150,8 @@ def load_events():
         # Parse date safely
         try:
             date = parse_flexible_date(row['Date'])
-            if not date and clean_cell(row.get('Date')).lower() == "recurring":
+            date_cell = clean_cell(row.get("Date"))
+            if not date and date_cell and date_cell.lower() == "recurring":
                 date = None
             elif not date:
                 print(f"Skipping row due to invalid date: {row.get('Date')}")
@@ -193,7 +194,7 @@ def load_events():
         organizer_cells = [clean_cell(o) for o in (row.get('Lead Organizer','').split(',')) if clean_cell(o)]
         organizer_ids = [return_id(Organizer, o) for o in organizer_cells]
         for oid in organizer_ids:
-            db.session.execute(event_organizers.insert().values(event_id=event.id, organizer_id=oid))
+            db.session.execute(event_organizers.insert().values(event_id=event.id, organizer_id=oid).prefix_with("OR IGNORE"))
         if organizer_ids:
             event.lead_organizer = organizer_ids[0]  # main FK
         
@@ -201,7 +202,7 @@ def load_events():
         partner_cells = [clean_cell(p) for p in (row.get('Partners','').split(',')) if clean_cell(p)]
         partner_ids = [return_id(Partners, p) for p in partner_cells]
         for pid in partner_ids:
-            db.session.execute(event_partners.insert().values(event_id=event.id, partner_id=pid))
+            db.session.execute(event_partners.insert().values(event_id=event.id, partner_id=pid).prefix_with("OR IGNORE"))
         if partner_ids:
             event.partner_id = partner_ids[0]  # main FK
         
