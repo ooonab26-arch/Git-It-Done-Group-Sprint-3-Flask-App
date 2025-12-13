@@ -216,12 +216,14 @@ def get_event(event_id):
     })
   
 @main_blueprint.route('/profile')
+@login_required
 def profile():
 
-    if current_user.is_authenticated:
-        user_name = current_user.name 
-        user_email = current_user.email
-        user_position = current_user.position
+    user_name = current_user.name 
+    user_email = current_user.email
+    user_position = current_user.position
+        
+
         
     return render_template('profile.html', user_name=user_name, user_email=user_email, user_position=user_position)
 

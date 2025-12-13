@@ -164,12 +164,12 @@
           <div class="col-auto my-auto">
             <div class="h-100">
               <h5 class="mb-1">
-                Sayo Kravits
+                {{ user_name }}
               </h5>
               <p class="mb-0 font-weight-bold text-sm">
                 <div class="col-auto">
                   <span class="badge bg-success">Active</span>
-                  <span class="badge bg-primary">Admin</span>
+                  <span class="badge bg-primary">{{ user_position }}</span>
 
                 </div>
               </p>
@@ -202,13 +202,13 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="example-text-input" class="form-control-label">Email address</label>
-                    <input class="form-control" type="email" value="@colby.edu">
+                    <input class="form-control" type="email" value="{{ user_email }}">
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="example-text-input" class="form-control-label">First name</label>
-                    <input class="form-control" type="text" value="">
+                    <input class="form-control" type="text" value="{{ user_name }}">
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -220,7 +220,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="example-text-input" class="form-control-label">User Status</label>
-                    <select class="form-control" id="status">
+                    <select class="form-control" id="status" value="{{ user_position }}">
                       <option value="admin">Admin</option>
                       <option value="student_worker">Student Worker</option>
                       <option value="faculty">Faculty</option>
