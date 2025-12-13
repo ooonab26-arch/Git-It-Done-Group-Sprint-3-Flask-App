@@ -159,6 +159,11 @@ def delete_event(event_id):
     if not event:
         return jsonify({"error": "event not found"}) ,404
     
+    files = ProcessedFile.query.filter_by(event_id=event.id).all()
+    
+    for f in files:
+        db.session.delete(f)
+        
     db.session.delete(event)
     db.session.commit()
     
