@@ -137,7 +137,7 @@ def google_callback():
 
     if not user:
         # Auto-create new user if not found
-        user = User(name=name, email=email, position="Staff", google_id=google_id)
+        user = User(name=name, email=email, position="Admin", google_id=google_id)
         db.session.add(user)
         db.session.commit()
         flash("Account created via Google OAuth", "success")
